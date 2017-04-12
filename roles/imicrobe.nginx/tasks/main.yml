@@ -1,0 +1,15 @@
+---
+- name: configure nginx
+  copy:
+    src: ./files/nginx.conf
+    dest: /etc/nginx
+
+- name: make directory /etc/nginx/global
+  file: 
+    path: /etc/nginx/global
+    state: directory
+
+- name: install /etc/nginx/global/wordpress.conf
+  copy:
+    src: ./files/wordpress.conf
+    dest: /etc/nginx/global/wordpress.conf

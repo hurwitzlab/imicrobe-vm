@@ -1,0 +1,66 @@
+---
+- name: install MySQL-python for ansible
+  package:
+    name: MySQL-python
+    state: latest
+
+- name: Create imicrobe database user
+  mysql_user:
+    name: imicrobe
+    password: imicrobe
+    priv: "*.*:ALL"
+    state: present
+
+- name: Create database 'imicrobe'
+  mysql_db:
+    name: imicrobe
+    state: present
+    login_user: root
+    login_password: 1m169083
+
+- name: Copy imicrobe_dump.sql to VM 
+  copy:
+    src: /Users/jlynch/project/imicrobe/exported-dbs/imicrobe_dump.sql
+    dest: /tmp/imicrobe_dump.sql
+    owner: vagrant
+    group: vagrant
+
+- name: Import imicrobe database
+  mysql_db:
+    name: imicrobe
+    state: import
+    target: /tmp/imicrobe_dump.sql
+
+- name: Create database 'imicrobe_wordpress'
+  mysql_db:
+    name: imicrobe_wordpress
+    state: present
+    login_user: imicrobe
+    login_password: imicrobe
+
+- name: Copy imicrobe_wordpress_dump.sql to VM 
+  copy:
+    src: /Users/jlynch/project/imicrobe/exported-dbs/imicrobe_wordpress_dump.sql
+    dest: /tmp/imicrobe_wordpress_dump.sql
+
+- name: Import imicrobe_wordpress database
+  mysql_db:
+    name: imicrobe_wordpress
+    state: import
+    target: /tmp/imicrobe_wordpress_dump.sql
+
+- name: copy and unpack imicrobe mongodb database dump to VM
+  unarchive:
+    src: /Users/jlynch/project/imicrobe/exported-dbs/imicrobe_mongo_dump_20170329.tar.gz
+    dest: /tmp
+
+- name: start the mongod service (why did the mongodb role not do this?)
+  service:
+    name: mongod
+    state: started
+
+- name: use mongorestore to load the mongodb database dump
+  command: mongorestore /tmp/dump
+
+- name: clean up
+  command: rm -rf /tmp/dump
