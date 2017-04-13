@@ -1,0 +1,11 @@
+---
+- name: Download wordpress
+  unarchive:
+    src: https://wordpress.org/latest.zip
+    dest: /usr/local/imicrobe/
+    remote_src: True
+
+- name: Copy wp-config.php
+  copy:
+    src: files/wp-config.php
+    dest: /usr/local/imicrobe/wordpress/

@@ -1,0 +1,26 @@
+---
+- name: install git for ansible
+  package:
+    name: git
+    state: latest
+
+- name: Create /usr/local/imicrobe
+  file:
+    path: /usr/local/imicrobe
+    state: directory
+
+- name: clone the imicrobe-mojo repository
+  git:
+    repo: https://github.com/hurwitzlab/imicrobe-mojo.git
+    dest: /usr/local/imicrobe/mojo
+    force: True
+
+- name: install imicrobe.service
+  copy:
+    src: files/imicrobe.service
+    dest: /lib/systemd/system/
+
+- name: start the imicrobe service
+  service:
+    name: imicrobe
+    state: started
