@@ -10,7 +10,6 @@
     - { role: imicrobe.update-yum-repos }
 
     - { role: ontic.nginx }
-    - { role: ontic.wordpress }
     - { role: CSC-IT-Center-for-Science.mariadb, 
         mariadb_state: latest,
         mariadb_root_password: 1m169083,
@@ -22,10 +21,10 @@
         mongodb_repo_gpgkey: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc" }
     - { role: imicrobe.mojolicious }
 
-    - { role: imicrobe.import-dbs }
-    - { role: muscope.import-dbs }
     - { role: imicrobe.imicrobe-lib }
-
+    - { role: imicrobe.imicrobe-mojo }
+    - { role: imicrobe.import-dbs }
+    - { role: imicrobe.wordpress }
+    #- { role: muscope.import-dbs }
     - { role: imicrobe.nginx }
-
-    - { role: agave.microsites }
+    #- { role: agave.microsites }
