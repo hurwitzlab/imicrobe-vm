@@ -5,6 +5,8 @@
   become_method: sudo
   vars:
     pw: 1m169083
+  vars_files:
+    - imicrobe_vars_local.yml
 
   roles:
     - { role: imicrobe.update-yum-repos }
