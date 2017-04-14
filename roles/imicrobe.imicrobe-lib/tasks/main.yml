@@ -4,7 +4,20 @@
     name: git
     state: latest
 
+- name: Create /usr/local/imicrobe
+  file:
+    path: /usr/local/imicrobe
+    state: directory
+
 - name: clone the imicrobe-lib repository
   git:
     repo: https://github.com/hurwitzlab/imicrobe-lib.git
-    dest: /home/vagrant/imicrobe-lib
+    #dest: /home/vagrant/imicrobe-lib
+    dest: /usr/local/imicrobe/lib
+    force: True
+
+- name: use 'localhost' for the mongo host
+  lineinfile:
+    path: /usr/local/imicrobe/lib/conf/imicrobe.yaml
+    regexp: "  host:"
+    line: "  host: \"localhost\""
