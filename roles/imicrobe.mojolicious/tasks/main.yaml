@@ -11,21 +11,21 @@
     - perl-devel
     - perl-CPAN
 
-- name: download cpanm
-  get_url: url=https://cpanmin.us/
-           dest=/tmp/cpanm.pl
-           mode=755
+#- name: download cpanm
+#  get_url: url=https://cpanmin.us/
+#           dest=/tmp/cpanm.pl
+#           mode=755
 
-- name: install cpanm so that we can use the ansible cpanm module
-  command: perl cpanm.pl App::cpanminus
-  args:
-    chdir: /tmp/
-    creates: /usr/local/bin/cpanm
+#- name: install cpanm so that we can use the ansible cpanm module
+#  command: perl cpanm.pl App::cpanminus
+#  args:
+#    chdir: /tmp/
+#    creates: /usr/local/bin/cpanm
 
-- name: add cpanm symbolic link to /usr/bin/
-  file: src=/usr/local/bin/cpanm
-        dest=/usr/bin/cpanm
-        state=link
+#- name: add cpanm symbolic link to /usr/bin/
+#  file: src=/usr/local/bin/cpanm
+#        dest=/usr/bin/cpanm
+#        state=link
 
 - name: download perlbrew
   get_url:
@@ -38,15 +38,26 @@
     creates: /home/vagrant/perl5/perlbrew/bin/perlbrew
   become_user: vagrant
 
-- name: install perl-5.25.10 using perlbrew
+- name: build perl-5.25.10 using perlbrew
   command: /home/vagrant/perl5/perlbrew/bin/perlbrew install perl-5.25.10
   args:
     creates: /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/perl
   become_user: vagrant
 
+#- name: install cpanm using perl-5.25.10
+#  command: /home/vagrant/perl5/perlbrew install-cpanm
+#  shell: "curl -L http://cpanmin.us | /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/perl - --sudo App::cpanminus"
+#  become_user: vagrant
+
 - name: install Mojolicious using perl-5.25.10
   shell: "curl -L https://cpanmin.us | /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/perl - -M https://cpan.metacpan.org -n Mojolicious"
   become_user: vagrant
+
+- name: create a link to hypnotoad in /usr/local/bin
+  file:
+    src: /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/hypnotoad
+    dest: /usr/local/bin/hypnotoad
+    state: link
 
 - name: install zlib-devel - needed for DBD::mysql
   yum:
@@ -61,15 +72,18 @@
 - name: install dependencies
   command: "/home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/cpan {{ item }}"
   with_items:
-    - DBIx::Class::Schema::Loader
     - namespace::autoclean
-    - Moose::Util::TypeConstraints
     - YAML
-    - MooseX::MarkAsMethods
-    - MooseX::NonMoose
     - MongoDB
     - Readonly
     - DBD::mysql
+    - JSON::XS
+    - LWP::UserAgent
+    - String::Trim
+    - DBIx::Class::Schema::Loader
+    - Moose::Util::TypeConstraints
+    - MooseX::MarkAsMethods
+    - MooseX::NonMoose
   become_user: vagrant
 
 - name: create ~/.my.conf
