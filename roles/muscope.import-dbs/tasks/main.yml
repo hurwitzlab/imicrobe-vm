@@ -7,7 +7,7 @@
 - name: Create muscope database user
   mysql_user:
     name: muscope
-    password: muscope
+    password: 
     priv: "*.*:ALL"
     state: present
 
@@ -16,7 +16,7 @@
     name: muscope
     state: present
     login_user: root
-    login_password: 1m169083
+    login_password: 
 
 - name: Copy muscope_dump.sql to VM 
   copy:
