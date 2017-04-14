@@ -4,10 +4,11 @@
     name: MySQL-python
     state: latest
 
+# grant all on `imicrobe`.* to `imicrobe`@localhost identified by '<password>';
 - name: Create imicrobe database user
   mysql_user:
     name: imicrobe
-    password: imicrobe
+    password: "{{ imicrobe_mysql_pw }}"
     priv: "*.*:ALL"
     state: present
 
@@ -18,49 +19,55 @@
     login_user: root
     login_password: 1m169083
 
-- name: Copy imicrobe_dump.sql to VM 
-  copy:
-    src: /Users/jlynch/project/imicrobe/exported-dbs/imicrobe_dump.sql
-    dest: /tmp/imicrobe_dump.sql
-    owner: vagrant
-    group: vagrant
+- name: Copy imicrobe database dump to VM 
+  get_url:
+    url: ftp://ftp.imicrobe.us/database/imicrobe-2017-04-13.sql.gz
+    dest: /tmp/
+    #owner: vagrant
+    #group: vagrant
 
 - name: Import imicrobe database
   mysql_db:
     name: imicrobe
     state: import
-    target: /tmp/imicrobe_dump.sql
+    target: /tmp/imicrobe-2017-04-13.sql.gz
 
-- name: Create database 'imicrobe_wordpress'
-  mysql_db:
-    name: imicrobe_wordpress
-    state: present
-    login_user: imicrobe
-    login_password: imicrobe
+#- name: Create database 'imicrobe_wordpress'
+#  mysql_db:
+#    name: imicrobe_wordpress
+#    state: present
+#    login_user: imicrobe
+#    login_password: imicrobe
 
-- name: Copy imicrobe_wordpress_dump.sql to VM 
-  copy:
-    src: /Users/jlynch/project/imicrobe/exported-dbs/imicrobe_wordpress_dump.sql
-    dest: /tmp/imicrobe_wordpress_dump.sql
+#- name: Copy imicrobe_wordpress_dump.sql to VM 
+#  copy:
+#    src: /Users/jlynch/project/imicrobe/exported-dbs/imicrobe_wordpress_dump.sql
+#    dest: /tmp/imicrobe_wordpress_dump.sql
 
-- name: Import imicrobe_wordpress database
-  mysql_db:
-    name: imicrobe_wordpress
-    state: import
-    target: /tmp/imicrobe_wordpress_dump.sql
+#- name: Import imicrobe_wordpress database
+#  mysql_db:
+#    name: imicrobe_wordpress
+#    state: import
+#    target: /tmp/imicrobe_wordpress_dump.sql
 
-- name: copy and unpack imicrobe mongodb database dump to VM
-  unarchive:
-    src: /Users/jlynch/project/imicrobe/exported-dbs/imicrobe_mongo_dump_20170329.tar.gz
-    dest: /tmp
+#- name: copy and unpack imicrobe mongodb database dump to VM
+#  unarchive:
+#    src: /Users/jlynch/project/imicrobe/exported-dbs/imicrobe_mongo_dump_20170329.tar.gz
+#    dest: /tmp
 
-- name: start the mongod service (why did the mongodb role not do this?)
+- name: Start the mongod service (there is an Ansible handler for this but I need mongo running NOW)
   service:
     name: mongod
     state: started
 
-- name: use mongorestore to load the mongodb database dump
-  command: mongorestore /tmp/dump
+- name: Build the mongo database
+  #shell: IMICROBE_CONF=/home/vagrant/imicrobe-lib/conf/imicrobe.yaml /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/perl scripts/load-search.pl
+  command: /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/perl scripts/load-search.pl
+  args:
+    chdir: /usr/local/imicrobe/lib
 
-- name: clean up
-  command: rm -rf /tmp/dump
+#- name: use mongorestore to load the mongodb database dump
+#  command: mongorestore /tmp/dump
+
+#- name: clean up
+#  command: rm -rf /tmp/dump
