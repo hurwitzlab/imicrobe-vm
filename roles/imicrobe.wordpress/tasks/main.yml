@@ -1,4 +1,9 @@
 ---
+- name: Install unzip for Ansible unarchive command
+  yum:
+    name: unzip
+    state: latest
+
 - name: Download wordpress
   unarchive:
     src: https://wordpress.org/latest.zip
