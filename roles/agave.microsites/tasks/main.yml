@@ -36,6 +36,19 @@
   become: yes
   become_user: vagrant
 
+- name: replace implicit.js
+  copy:
+    src: files/microsites/implicit.js
+    dest: /home/vagrant/microsites/web/app/js/implicit.js
+  become: yes
+  become_user: vagrant
+
+- name: replace one line in main.js
+  lineinfile:
+    path: /home/vagrant/microsites/web/app/js/main.js
+    regexp: "tenantId:"
+    line: "tenantId: 'iplantc.org',"
+
 - name: install microsites dependencies
   command: npm install
   args:
