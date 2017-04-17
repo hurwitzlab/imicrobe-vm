@@ -1,0 +1,10 @@
+---
+- name: create imicrobe group
+  group:
+    name: imicrobe
+    state: present
+
+- name: create imicrobe account
+  user:
+    name: imicrobe
+    group: imicrobe
