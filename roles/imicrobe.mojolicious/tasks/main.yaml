@@ -11,53 +11,30 @@
     - perl-devel
     - perl-CPAN
 
-#- name: download cpanm
-#  get_url: url=https://cpanmin.us/
-#           dest=/tmp/cpanm.pl
-#           mode=755
+- name: install perlbrew with cpan to /usr/local/bin/perlbrew
+  command: cpan -f App::perlbrew
 
-#- name: install cpanm so that we can use the ansible cpanm module
-#  command: perl cpanm.pl App::cpanminus
-#  args:
-#    chdir: /tmp/
-#    creates: /usr/local/bin/cpanm
+- name: initialize perlbrew for the imicrobe user
+  command: /usr/local/bin/perlbrew init
+  become_user: imicrobe
 
-#- name: add cpanm symbolic link to /usr/bin/
-#  file: src=/usr/local/bin/cpanm
-#        dest=/usr/bin/cpanm
-#        state=link
+- name: install patch-perl -- otherwise perlbrew install perl-5.25.10 or similar fails
+  command: /usr/local/bin/perlbrew install-patchperl
+  become_user: imicrobe
 
-- name: download perlbrew
-  get_url:
-    url: https://install.perlbrew.pl
-    dest: /tmp/install.perlbrew.pl
-
-- name: install perlbrew
-  command: bash /tmp/install.perlbrew.pl
-  args:
-    creates: /home/vagrant/perl5/perlbrew/bin/perlbrew
-  become_user: vagrant
+- name: install cpanm for perlbrew
+  command: /usr/local/bin/perlbrew install-cpanm
+  become_user: imicrobe
 
 - name: build perl-5.25.10 using perlbrew
-  command: /home/vagrant/perl5/perlbrew/bin/perlbrew install perl-5.25.10
+  command: /usr/local/bin/perlbrew install perl-5.25.10
   args:
-    creates: /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/perl
-  become_user: vagrant
-
-#- name: install cpanm using perl-5.25.10
-#  command: /home/vagrant/perl5/perlbrew install-cpanm
-#  shell: "curl -L http://cpanmin.us | /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/perl - --sudo App::cpanminus"
-#  become_user: vagrant
+    creates: /home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/perl
+  become_user: imicrobe
 
 - name: install Mojolicious using perl-5.25.10
-  shell: "curl -L https://cpanmin.us | /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/perl - -M https://cpan.metacpan.org -n Mojolicious"
-  become_user: vagrant
-
-- name: create a link to hypnotoad in /usr/local/bin
-  file:
-    src: /home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/hypnotoad
-    dest: /usr/local/bin/hypnotoad
-    state: link
+  shell: "curl -L https://cpanmin.us | /home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/perl - -M https://cpan.metacpan.org -n Mojolicious"
+  become_user: imicrobe
 
 - name: install zlib-devel - needed for DBD::mysql
   yum:
@@ -70,7 +47,7 @@
     state: latest
 
 - name: install dependencies
-  command: "/home/vagrant/perl5/perlbrew/perls/perl-5.25.10/bin/cpan {{ item }}"
+  command: "/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/cpan {{ item }}"
   with_items:
     - namespace::autoclean
     - YAML
@@ -84,14 +61,15 @@
     - Moose::Util::TypeConstraints
     - MooseX::MarkAsMethods
     - MooseX::NonMoose
-  become_user: vagrant
+    - Mojolicious::Plugin::TtRenderer
+  become_user: imicrobe
 
 - name: create ~/.my.conf
   template:
     src: ./templates/my.cnf.j2
-    dest: /home/vagrant/.my.cnf
-    owner: vagrant
-    group: vagrant
+    dest: /home/imicrobe/.my.cnf
+    owner: imicrobe
+    group: imicrobe
     mode: "u+rw,g-rwx,o-rwx"
 
 # to access mojolicious: ./perl5/perlbrew/bin/perlbrew use perl-5.25.10
