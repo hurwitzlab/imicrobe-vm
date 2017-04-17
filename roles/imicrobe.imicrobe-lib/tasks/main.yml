@@ -9,15 +9,15 @@
     path: /usr/local/imicrobe
     state: directory
 
+- name: Create /home/imicrobe/imicrobe
+  file:
+    path: /home/imicrobe/imicrobe
+    state: directory
+  become_user: imicrobe
+
 - name: clone the imicrobe-lib repository
   git:
     repo: https://github.com/hurwitzlab/imicrobe-lib.git
-    #dest: /home/vagrant/imicrobe-lib
-    dest: /usr/local/imicrobe/lib
+    dest: /home/imicrobe/imicrobe/lib
     force: True
-
-- name: use 'localhost' for the mongo host
-  lineinfile:
-    path: /usr/local/imicrobe/lib/conf/imicrobe.yaml
-    regexp: "  host:"
-    line: "  host: \"localhost\""
+  become_user: imicrobe
