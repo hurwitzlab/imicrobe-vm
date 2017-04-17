@@ -7,10 +7,12 @@
 - name: Download wordpress
   unarchive:
     src: https://wordpress.org/latest.zip
-    dest: /usr/local/imicrobe/
+    dest: /home/imicrobe/imicrobe/
     remote_src: True
+  become_user: imicrobe
 
 - name: Copy wp-config.php
   copy:
     src: files/wp-config.php
-    dest: /usr/local/imicrobe/wordpress/
+    dest: /home/imicrobe/imicrobe/wordpress/
+  become_user: imicrobe
