@@ -9,11 +9,32 @@
     path: /usr/local/imicrobe
     state: directory
 
+- name: Create /home/imicrobe/imicrobe
+  file:
+    path: /home/imicrobe/imicrobe
+    state: directory
+  become_user: imicrobe
+
 - name: clone the imicrobe-mojo repository
   git:
     repo: https://github.com/hurwitzlab/imicrobe-mojo.git
-    dest: /usr/local/imicrobe/mojo
+    dest: /home/imicrobe/imicrobe/lib/mojo
     force: True
+  become_user: imicrobe
+
+- name: copy mojolicious startup script to the imicrobe home directory
+  copy:
+    src: files/start_imicrobe_mojo.sh
+    dest: /home/imicrobe/
+    mode: u+x
+  become_user: imicrobe
+
+- name: copy mojolicious stop script to the imicrobe home directory
+  copy:
+    src: files/stop_imicrobe_mojo.sh
+    dest: /home/imicrobe/
+    mode: u+x
+  become_user: imicrobe
 
 - name: install imicrobe.service
   copy:
@@ -24,3 +45,4 @@
   service:
     name: imicrobe
     state: started
+    enabled: yes
