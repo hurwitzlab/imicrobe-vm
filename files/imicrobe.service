@@ -1,16 +1,15 @@
 [Unit]
 Description=Hypnotoad iMicrobe
-Requires=network.target
 After=network.target
 
 [Service]
+User=imicrobe
+Group=imicrobe
 Type=simple
 RemainAfterExit=yes
-SyslogIdentifier=imicrobe
-PIDFile=/usr/local/imicrobe/mojo/script/hypnotoad.pid
-ExecStart=/usr/local/bin/hypnotoad /usr/local/imicrobe/mojo/script/imicrobe
-ExecStop=/usr/local/bin/hypnotoad -s /usr/local/imicrobe/mojo/script/imicrobe
-ExecReload=/usr/local/bin/hypnotoad /usr/local/imicrobe/mojo/script/imicrobe
+ExecStart=/home/imicrobe/start_imicrobe_mojo.sh
+ExecStop=/home/imicrobe/stop_imicrobe_mojo.sh
+ExecReload=/home/imicrobe/start_imicrobe_mojo.sh
 
 [Install]
 WantedBy=multi-user.target
