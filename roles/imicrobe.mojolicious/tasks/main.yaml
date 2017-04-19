@@ -46,22 +46,8 @@
     name: openssl-devel
     state: latest
 
-- name: install dependencies
-  command: "/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/cpan {{ item }}"
-  with_items:
-    - namespace::autoclean
-    - YAML
-    - MongoDB
-    - Readonly
-    - DBD::mysql
-    - JSON::XS
-    - LWP::UserAgent
-    - String::Trim
-    - DBIx::Class::Schema::Loader
-    - Moose::Util::TypeConstraints
-    - MooseX::MarkAsMethods
-    - MooseX::NonMoose
-    - Mojolicious::Plugin::TtRenderer
+- name: install cpanminus
+  command: "/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/cpan -i App::cpanminus"
   become_user: imicrobe
 
 - name: create ~/.my.conf
