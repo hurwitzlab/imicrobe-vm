@@ -22,8 +22,16 @@
     force: True
   become_user: imicrobe
 
+- name: install NetAddr::IP because cpanm is not ???
+  command: "/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/cpanm NetAddr::IP"
+  args:
+    chdir: /home/imicrobe/imicrobe/lib/mojo
+  become_user: imicrobe
+
 - name: install dependencies from cpanfile
   command: "/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/cpanm ."
+  environment:
+    PERL5LIB: /home/imicrobe/imicrobe/lib
   args:
     chdir: /home/imicrobe/imicrobe/lib/mojo
   become_user: imicrobe
