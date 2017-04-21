@@ -3,38 +3,39 @@
   yum: name=gcc
        state=present
 
-- name: install cpan and perl-devel
+- name: install cpan and perl
   yum: 
     name: "{{ item }}"
     state: present
   with_items:
+    - perl
     - perl-devel
     - perl-CPAN
 
-- name: install perlbrew with cpan to /usr/local/bin/perlbrew
-  command: cpan -f App::perlbrew
-
-- name: initialize perlbrew for the imicrobe user
-  command: /usr/local/bin/perlbrew init
-  become_user: imicrobe
-
-- name: install patch-perl -- otherwise perlbrew install perl-5.25.10 or similar fails
-  command: /usr/local/bin/perlbrew install-patchperl
-  become_user: imicrobe
-
-- name: install cpanm for perlbrew
-  command: /usr/local/bin/perlbrew install-cpanm
-  become_user: imicrobe
-
-- name: build perl-5.25.10 using perlbrew
-  command: /usr/local/bin/perlbrew install perl-5.25.10
-  args:
-    creates: /home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/perl
-  become_user: imicrobe
+#- name: install perlbrew with cpan to /usr/local/bin/perlbrew
+#  command: cpan -f App::perlbrew
+#
+#- name: initialize perlbrew for the imicrobe user
+#  command: /usr/local/bin/perlbrew init
+#  become_user: imicrobe
+#
+#- name: install patch-perl -- otherwise perlbrew install perl-5.25.10 or similar fails
+#  command: /usr/local/bin/perlbrew install-patchperl
+#  become_user: imicrobe
+#
+#- name: install cpanm for perlbrew
+#  command: /usr/local/bin/perlbrew install-cpanm
+#  become_user: imicrobe
+#
+#- name: build perl-5.25.10 using perlbrew
+#  command: /usr/local/bin/perlbrew install perl-5.25.10
+#  args:
+#    creates: /home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/perl
+#  become_user: imicrobe
 
 - name: install Mojolicious using perl-5.25.10
-  shell: "curl -L https://cpanmin.us | /home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/perl - -M https://cpan.metacpan.org -n Mojolicious"
-  become_user: imicrobe
+  shell: curl -L https://cpanmin.us | perl - -M https://cpan.metacpan.org -n Mojolicious
+#  become_user: imicrobe
 
 - name: install zlib-devel - needed for DBD::mysql
   yum:
@@ -47,8 +48,8 @@
     state: latest
 
 - name: install cpanminus
-  command: "/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/cpan -i App::cpanminus"
-  become_user: imicrobe
+  command: "cpan -i App::cpanminus"
+#  become_user: imicrobe
 
 - name: create ~/.my.conf
   template:

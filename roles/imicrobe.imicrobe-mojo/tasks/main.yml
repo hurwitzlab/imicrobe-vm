@@ -23,10 +23,10 @@
   become_user: imicrobe
 
 - name: install dependencies from cpanfile
-  command: "/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/cpanm ."
+  command: "cpanm ."
   args:
     chdir: /home/imicrobe/imicrobe/lib/mojo
-  become_user: imicrobe
+#  become_user: imicrobe
 
 #- name: install dependencies
 #  command: "/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/cpan {{ item }}"
