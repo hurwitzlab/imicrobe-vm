@@ -30,7 +30,7 @@
 
 - name: use 'localhost' for the mongo host
   lineinfile:
-    path: /home/imicrobe/imicrobe/lib/conf/imicrobe.yaml
+    dest: /home/imicrobe/imicrobe/lib/conf/imicrobe.yaml
     regexp: "  host:"
     line: "  host: \"localhost\""
 
