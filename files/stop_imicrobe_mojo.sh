@@ -1,4 +1,6 @@
 #!/bin/bash
 
+export IMICROBE_CONF=/home/imicrobe/imicrobe/lib/conf/imicrobe.yaml
+
 cd /home/imicrobe/imicrobe/lib
-/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/hypnotoad -s mojo/script/imicrobe
+hypnotoad -s mojo/script/imicrobe

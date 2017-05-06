@@ -4,10 +4,15 @@
     name: git
     state: latest
 
-- name: Create /usr/local/imicrobe
-  file:
-    path: /usr/local/imicrobe
-    state: directory
+- name: install Node.js
+  package:
+    name: nodejs
+    state: latest
+
+- name: install Bower
+  npm:
+    name: bower
+    global: yes
 
 - name: Create /home/imicrobe/imicrobe
   file:
@@ -22,29 +27,89 @@
     force: True
   become_user: imicrobe
 
-- name: install dependencies from cpanfile
-  command: "cpanm ."
+- name: install packages from bower.json
+  command: bower install
   args:
     chdir: /home/imicrobe/imicrobe/lib/mojo
+  become_user: imicrobe
+
+- name: install dependencies
+  command: "cpanm {{ item }}"
+  with_items:
+    - Archive::Tar
+    - autodie
+    - Captcha::reCAPTCHA
+    - Data::Dump
+    - Data::GUID
+    - Date::Parse
+    - DateTime
+    - DBD::mysql
+    - DBI
+    - DBIx::Class
+    - Email::Valid
+    - HTML::LinkExtractor
+    - IO::Zlib
+    - JSON::XS
+    - List::MoreUtils
+    - LWP::UserAgent
+    - Mail::Sendmail
+    - NetAddr::IP
+    - Mail::SpamAssassin
+    - Mojolicious
+    - Mojolicious::Plugin::JSONConfig
+    - Mojolicious::Plugin::TtRenderer
+    - MongoDB
+    - Moose
+    - Moose::Util::TypeConstraints
+    - MooseX::MarkAsMethods
+    - MooseX::NonMoose
+    - namespace::autoclean
+    - Readonly
+    - String::Trim
+    - Template
+    - Template::Plugin::Comma
+    - Text::RecordParser
+    - YAML
+
+- name: copy Captcha configuration file to imicrobe/lib/mojo directory
+  template:
+    src: templates/imicrobe-captcha.yaml.j2
+    dest: /home/imicrobe/imicrobe/lib/mojo/imicrobe-captcha.yaml
+    mode: u+r
+  become_user: imicrobe
+
+- name: copy sample-imicrobe.json to imicrobe.json
+  command: cp /home/imicrobe/imicrobe/lib/mojo/sample-imicrobe.json /home/imicrobe/imicrobe/lib/mojo/imicrobe.json
+  become_user: imicrobe
+
+- name: modify lib/mojo/imicrobe.json
+  lineinfile:
+    dest: /home/imicrobe/imicrobe/lib/mojo/imicrobe.json
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    #- { regexp: '"secret":',               line: '    "secret": "{{ imicrobe_secret }}",'}
+    - { regexp: '"password": "XXX"',       line: '        "password": "{{ imicrobe_mysql_pw }}",'}
+    - { regexp: '"gmap_api_key":',         line: '    "gmap_api_key": "{{ imicrobe_gmap_api_key }}",' }
+    - { regexp: '"google_analytics_key":', line: '    "google_analytics_key": "{{ imicrobe_google_analytics_key }}",' }
+    - { regexp: '"public":',               line: '        "public": "{{ imicrobe_tacc_public }}",' }
+    - { regexp: '"private":',              line: '        "private": "{{ imicrobe_tacc_private }}",' }
+    - { regexp: '"host":',                 line: '        "host": "{{ imicrobe_mongo_host }}",' }
+  become_user: imicrobe
+
+#- name: modify lib/mojo/imicrobe.json
+#  lineinfile:
+#    dest: /home/imicrobe/imicrobe/lib/mojo/imicrobe.json
+#    regexp: '"password": "XXX"'
+#    line: '    "password": "{{ imicrobe_mysql_pw }}",'
 #  become_user: imicrobe
 
-#- name: install dependencies
-#  command: "/home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/cpan {{ item }}"
-#  with_items:
-#    - namespace::autoclean
-#    - YAML
-#    - MongoDB
-#    - Readonly
-#    - DBD::mysql
-#    - JSON::XS
-#    - LWP::UserAgent
-#    - String::Trim
-#    - DBIx::Class::Schema::Loader
-#    - Moose::Util::TypeConstraints
-#    - MooseX::MarkAsMethods
-#    - MooseX::NonMoose
-#    - Mojolicious::Plugin::TtRenderer
-#  become_user: imicrobe
+- name: modify lib/mojo/imicrobe.json
+  lineinfile:
+    dest: /home/imicrobe/imicrobe/lib/mojo/imicrobe.json
+    regexp: '"captcha_conf":'
+    line: '    "captcha_conf": "/home/imicrobe/imicrobe/lib/mojo/imicrobe-captcha.yaml",'
+  become_user: imicrobe
 
 - name: copy mojolicious startup script to the imicrobe home directory
   copy:
@@ -65,6 +130,7 @@
     src: files/imicrobe.service
     dest: /lib/systemd/system/
 
+# does this work?? I often have to stop and start this service
 - name: start the imicrobe service
   service:
     name: imicrobe

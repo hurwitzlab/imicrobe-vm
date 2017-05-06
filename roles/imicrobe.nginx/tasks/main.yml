@@ -1,8 +1,28 @@
 ---
-- name: configure nginx
+- name: Create the /etc/self-signed directory
+  file:
+    path: /etc/self-signed
+    state: directory
+
+- name: Create a self-signed certificate
+  command: openssl req -newkey rsa:2048 -nodes -keyout /etc/self-signed/data-imicrobe-us.key -x509 -days 2 -out /etc/self-signed/data-imicrobe-us.crt -subj "/C=US/ST=Arizona/L=Tucson/O=iMicrobe/CN=localhost"
+
+- stat: path=/etc/nginx/conf.d/imicrobe.conf
+  register: imicrobe_conf
+
+- name: Configure nginx with imicrobe.conf
   copy:
-    src: ./files/nginx.conf
-    dest: /etc/nginx
+    src: files/imicrobe.conf
+    dest: /etc/nginx/conf.d/
+  when: imicrobe_conf.stat.exists == False
+
+- name: Remove default nginx configuration
+  command: mv /etc/nginx/conf.d/default.conf /etc/nginx/conf.d/default.bak
+  when: imicrobe_conf.stat.exists == False
+
+- name: install Certbot
+  yum:
+    name: certbot
 
 - name: make directory /etc/nginx/global
   file: 

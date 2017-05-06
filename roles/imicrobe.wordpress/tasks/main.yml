@@ -4,15 +4,27 @@
     name: unzip
     state: latest
 
+- name: Install PHP 7
+  yum:
+    name: "{{ item }}"
+  with_items:
+    - php70u-fpm-nginx
+    - php70u-cli
+    - php70u-mysqlnd
+
+- name: Start the php-fpm service
+  service:
+    name: php-fpm
+    state: started
+    enabled: yes
+
 - name: Download wordpress
   unarchive:
     src: https://wordpress.org/latest.zip
-    dest: /home/imicrobe/imicrobe/
+    dest: /usr/share
     remote_src: True
-  become_user: imicrobe
 
 - name: Copy wp-config.php
   copy:
     src: files/wp-config.php
-    dest: /home/imicrobe/imicrobe/wordpress/
-  become_user: imicrobe
+    dest: /usr/share/wordpress/

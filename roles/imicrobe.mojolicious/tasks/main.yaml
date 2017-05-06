@@ -3,7 +3,7 @@
   yum: name=gcc
        state=present
 
-- name: install cpan and perl
+- name: install perl, cpan, cpanminus (must use yum for cpanminus on system perl otherwise it does not work)
   yum: 
     name: "{{ item }}"
     state: present
@@ -11,31 +11,7 @@
     - perl
     - perl-devel
     - perl-CPAN
-
-#- name: install perlbrew with cpan to /usr/local/bin/perlbrew
-#  command: cpan -f App::perlbrew
-#
-#- name: initialize perlbrew for the imicrobe user
-#  command: /usr/local/bin/perlbrew init
-#  become_user: imicrobe
-#
-#- name: install patch-perl -- otherwise perlbrew install perl-5.25.10 or similar fails
-#  command: /usr/local/bin/perlbrew install-patchperl
-#  become_user: imicrobe
-#
-#- name: install cpanm for perlbrew
-#  command: /usr/local/bin/perlbrew install-cpanm
-#  become_user: imicrobe
-#
-#- name: build perl-5.25.10 using perlbrew
-#  command: /usr/local/bin/perlbrew install perl-5.25.10
-#  args:
-#    creates: /home/imicrobe/perl5/perlbrew/perls/perl-5.25.10/bin/perl
-#  become_user: imicrobe
-
-- name: install Mojolicious using perl-5.25.10
-  shell: curl -L https://cpanmin.us | perl - -M https://cpan.metacpan.org -n Mojolicious
-#  become_user: imicrobe
+    - cpanminus
 
 - name: install zlib-devel - needed for DBD::mysql
   yum:
@@ -47,10 +23,6 @@
     name: openssl-devel
     state: latest
 
-- name: install cpanminus
-  command: "cpan -i App::cpanminus"
-#  become_user: imicrobe
-
 - name: create ~/.my.conf
   template:
     src: ./templates/my.cnf.j2
@@ -58,5 +30,3 @@
     owner: imicrobe
     group: imicrobe
     mode: "u+rw,g-rwx,o-rwx"
-
-# to access mojolicious: ./perl5/perlbrew/bin/perlbrew use perl-5.25.10

@@ -10,7 +10,6 @@ RemainAfterExit=yes
 SyslogIdentifier=imicrobe
 ExecStart=/home/imicrobe/start_imicrobe_mojo.sh
 ExecStop=/home/imicrobe/stop_imicrobe_mojo.sh
-ExecReload=/home/imicrobe/start_imicrobe_mojo.sh
 
 [Install]
 WantedBy=multi-user.target
