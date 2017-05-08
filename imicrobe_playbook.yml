@@ -1,10 +1,8 @@
 ---
-- name: Install iMicrobe and muSCOPE on CentOS 7
+- name: Install iMicrobe on CentOS 7
   hosts: all
   become: yes
   become_method: sudo
-  vars:
-    pw: 1m169083
   vars_files:
     - imicrobe_vars_local.yml
 
@@ -14,14 +12,13 @@
     - { role: ontic.nginx }
     - { role: CSC-IT-Center-for-Science.mariadb, 
         mariadb_state: latest,
-        mariadb_root_password: 1m169083,
+        mariadb_root_password: "{{ root_mysql_pw }}",
         __mariadb_packages: [mariadb-server, mariadb-devel] }
     - { role: lesmyrmidons.mongodb, 
         mongodb_version: "3.4",
         mongodb_repo_baseurl: "https://repo.mongodb.org/yum/redhat/{{ ansible_distribution_major_version }}/mongodb-org/{{ mongodb_version }}/x86_64/",
         mongodb_repo_gpgcheck: yes,
         mongodb_repo_gpgkey: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc" }
-    #- { role: ontic.php }
 
     - { role: imicrobe.account }
     - { role: imicrobe.mojolicious }
@@ -30,6 +27,5 @@
     - { role: imicrobe.imicrobe-mojo }
     - { role: imicrobe.import-dbs }
     - { role: imicrobe.wordpress }
-    #- { role: muscope.import-dbs }
+
     - { role: imicrobe.nginx }
-    #- { role: agave.microsites }

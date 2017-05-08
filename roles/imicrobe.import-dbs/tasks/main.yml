@@ -14,19 +14,19 @@
 
 - name: Download imicrobe database dump to VM 
   get_url:
-    url: ftp://ftp.imicrobe.us/database/imicrobe-2017-04-24.sql.gz
+    url: ftp://ftp.imicrobe.us/database/imicrobe-2017-05-04.sql.gz
     dest: /tmp/
 
-- name: Copy imicrobe database dump to VM
-  copy:
-    src: files/imicrobe_dump.sql
-    dest: /tmp/
+#- name: Copy imicrobe database dump to VM
+#  copy:
+#    src: files/imicrobe_dump.sql
+#    dest: /tmp/
 
 - name: Import imicrobe database
   mysql_db:
     name: imicrobe
     state: import
-    target: /tmp/imicrobe_dump.sql
+    target: /tmp/imicrobe-2017-05-04.sql.gz
 
 - name: Start the mongod service (there is an Ansible handler for this but I need mongo running now)
   service:
