@@ -14,7 +14,6 @@ Vagrant.configure("2") do |config|
   # within the machine from a port on the host machine. In the example below,
   # accessing "localhost:8080" will access port 8080 on the guest machine.
   config.vm.network "forwarded_port", guest: 8000, host: 8000
-  config.vm.network "forwarded_port", guest: 8001, host: 8001
   config.vm.network "forwarded_port", guest: 3000, host: 3000
 
   # Share an additional folder to the guest VM. The first argument is
@@ -28,7 +27,7 @@ Vagrant.configure("2") do |config|
     # Display the VirtualBox GUI when booting the machine
     vb.gui = false
     vb.cpus = 2
-    vb.memory = "1024"
+    vb.memory = 1024
   end
  
   config.vm.provision "ansible" do |ansible|

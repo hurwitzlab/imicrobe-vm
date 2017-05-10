@@ -20,7 +20,13 @@ $ source activate imicrobevm
 (imicrobevm)$ ansible-galaxy install lesmyrmidons.mongodb
 ```
 
-## Build a Virtual Machine
+It is very helpful to install the `vagrant-vbguest` plugin. This plugin automatically updates the VirtualBox Guest Additions kernel modules in a VM each time you run `vagrant up`. Install it with this command:
+
+```
+$ vagrant plugin install vagrant-vbguest
+```
+
+## Build an iMicrobe Virtual Machine
 
 ```
 (imicrobevm)$ git clone https://github.com/hurwitzlab/imicrobe-vm.git

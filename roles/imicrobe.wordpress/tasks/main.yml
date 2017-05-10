@@ -1,4 +1,12 @@
 ---
+- name: Add IUS repository step 1
+  get_url:
+    url: https://setup.ius.io
+    dest: /tmp/setup-ius.sh
+
+- name: Add IUS repository step 2
+  command: bash /tmp/setup-ius.sh
+
 - name: Install unzip for Ansible unarchive command
   yum:
     name: unzip

@@ -27,6 +27,11 @@
     force: True
   become_user: imicrobe
 
+- name: checkout the vm branch
+  command: git checkout vm
+  args:
+    chdir: /home/imicrobe/imicrobe/lib/mojo
+
 - name: install packages from bower.json
   command: bower install
   args:

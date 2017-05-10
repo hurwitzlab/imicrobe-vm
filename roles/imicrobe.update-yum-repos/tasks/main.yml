@@ -13,11 +13,3 @@
     baseurl: http://yum.mariadb.org/10.1/centos7-amd64
     gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
     gpgcheck: yes
-
-- name: Add IUS repository
-  get_url:
-    url: https://setup.ius.io
-    dest: /tmp/setup-ius.sh
-
-- name: Add IUS repository
-  command: bash /tmp/setup-ius.sh

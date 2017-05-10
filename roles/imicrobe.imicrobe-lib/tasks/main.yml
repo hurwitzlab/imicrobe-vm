@@ -4,6 +4,16 @@
     name: git
     state: latest
 
+- name: install Node.js for variety
+  package:
+    name: nodejs
+    state: latest
+
+- name: install variety-cli for load-search.pl
+  npm:
+    name: variety-cli
+    global: yes
+
 - name: Create /usr/local/imicrobe
   file:
     path: /usr/local/imicrobe
@@ -21,3 +31,8 @@
     dest: /home/imicrobe/imicrobe/lib
     force: True
   become_user: imicrobe
+
+- name: checkout the vm branch
+  command: git checkout vm
+  args:
+    chdir: /home/imicrobe/imicrobe/lib

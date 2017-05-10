@@ -26,6 +26,12 @@
     - { role: imicrobe.imicrobe-lib }
     - { role: imicrobe.imicrobe-mojo }
     - { role: imicrobe.import-dbs }
-    - { role: imicrobe.wordpress }
+    #- { role: imicrobe.wordpress }
 
     - { role: imicrobe.nginx }
+
+  tasks:
+    - name: install htop
+      package:
+        name: htop
+        state: latest
