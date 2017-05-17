@@ -1,7 +1,7 @@
 ---
-- name: Create the /etc/self-signed directory
+- name: Create the /etc/ssl/self-signed directory
   file:
-    path: /etc/self-signed
+    path: /etc/ssl/self-signed
     state: directory
 
 - name: Create a self-signed certificate
