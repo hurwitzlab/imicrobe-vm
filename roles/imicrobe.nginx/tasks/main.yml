@@ -5,7 +5,7 @@
     state: directory
 
 - name: Create a self-signed certificate
-  command: openssl req -newkey rsa:2048 -nodes -keyout /etc/self-signed/data-imicrobe-us.key -x509 -days 2 -out /etc/self-signed/data-imicrobe-us.crt -subj "/C=US/ST=Arizona/L=Tucson/O=iMicrobe/CN=localhost"
+  command: openssl req -newkey rsa:2048 -nodes -keyout /etc/ssl/self-signed/data-imicrobe-us.key -x509 -days 365 -out /etc/ssl/self-signed/data-imicrobe-us.crt -subj "/C=US/ST=Arizona/L=Tucson/O=iMicrobe/CN=localhost"
 
 - stat: path=/etc/nginx/conf.d/imicrobe.conf
   register: imicrobe_conf
