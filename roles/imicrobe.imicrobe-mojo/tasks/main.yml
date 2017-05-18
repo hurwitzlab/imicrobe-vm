@@ -99,6 +99,7 @@
     - { regexp: '"google_analytics_key":', line: '    "google_analytics_key": "{{ imicrobe_google_analytics_key }}",' }
     - { regexp: '"public":',               line: '        "public": "{{ imicrobe_tacc_public }}",' }
     - { regexp: '"private":',              line: '        "private": "{{ imicrobe_tacc_private }}",' }
+    - { regexp: '"redirect_url":',         line: '        "redirect_url": "{{ imicrobe_tacc_redirect_url }}"' }
     - { regexp: '"host":',                 line: '        "host": "{{ imicrobe_mongo_host }}",' }
   become_user: imicrobe
 
