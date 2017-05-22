@@ -20,17 +20,28 @@
     state: directory
   become_user: imicrobe
 
+- name: Has the repository already been cloned?
+  stat: path=/home/imicrobe/imicrobe/lib/mojo/.git
+  register: imicrobe_mojo_dot_git
+
 - name: clone the imicrobe-mojo repository
   git:
     repo: https://github.com/hurwitzlab/imicrobe-mojo.git
     dest: /home/imicrobe/imicrobe/lib/mojo
-    force: True
   become_user: imicrobe
+  when: not imicrobe_mojo_dot_git.stat.exists
 
 - name: checkout the vm branch
   command: git checkout vm
   args:
     chdir: /home/imicrobe/imicrobe/lib/mojo
+  become_user: imicrobe
+
+- name: create imicrobe/lib/mojo/log
+  file:
+    path: /home/imicrobe/imicrobe/lib/mojo/log
+    state: directory
+  become_user: imicrobe
 
 - name: install packages from bower.json
   command: bower install
@@ -39,7 +50,7 @@
   become_user: imicrobe
 
 - name: install dependencies
-  command: "cpanm {{ item }}"
+  command: "cpanm {{ item }} --force"
   with_items:
     - Archive::Tar
     - autodie
@@ -95,26 +106,13 @@
   with_items:
     #- { regexp: '"secret":',               line: '    "secret": "{{ imicrobe_secret }}",'}
     - { regexp: '"password": "XXX"',       line: '        "password": "{{ imicrobe_mysql_pw }}",'}
+    - { regexp: '"captcha_conf":',         line: '        "captcha_conf": "/home/imicrobe/imicrobe/lib/mojo/imicrobe-captcha.yaml",'}
     - { regexp: '"gmap_api_key":',         line: '    "gmap_api_key": "{{ imicrobe_gmap_api_key }}",' }
     - { regexp: '"google_analytics_key":', line: '    "google_analytics_key": "{{ imicrobe_google_analytics_key }}",' }
     - { regexp: '"public":',               line: '        "public": "{{ imicrobe_tacc_public }}",' }
     - { regexp: '"private":',              line: '        "private": "{{ imicrobe_tacc_private }}",' }
     - { regexp: '"redirect_url":',         line: '        "redirect_url": "{{ imicrobe_tacc_redirect_url }}"' }
     - { regexp: '"host":',                 line: '        "host": "{{ imicrobe_mongo_host }}",' }
-  become_user: imicrobe
-
-#- name: modify lib/mojo/imicrobe.json
-#  lineinfile:
-#    dest: /home/imicrobe/imicrobe/lib/mojo/imicrobe.json
-#    regexp: '"password": "XXX"'
-#    line: '    "password": "{{ imicrobe_mysql_pw }}",'
-#  become_user: imicrobe
-
-- name: modify lib/mojo/imicrobe.json
-  lineinfile:
-    dest: /home/imicrobe/imicrobe/lib/mojo/imicrobe.json
-    regexp: '"captcha_conf":'
-    line: '    "captcha_conf": "/home/imicrobe/imicrobe/lib/mojo/imicrobe-captcha.yaml",'
   become_user: imicrobe
 
 - name: copy mojolicious startup script to the imicrobe home directory

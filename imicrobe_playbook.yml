@@ -26,11 +26,25 @@
     - { role: imicrobe.imicrobe-lib }
     - { role: imicrobe.imicrobe-mojo }
     - { role: imicrobe.import-dbs }
-    #- { role: imicrobe.wordpress }
 
     - { role: imicrobe.nginx }
 
   tasks:
+    # the default wait_timeout and interactive_timeout are very high and we
+    # run out of connections quickly because they stay open a long time after
+    # the web app is done with them
+    # crawling the site at 200 urls/minute uses up the connections if max_connections
+    # is the default 150
+    # I tried using with_items here but only the last item appeared in the file
+    - name: configure MariaDB server connection wait_timeout and interactive_timeout
+      blockinfile:
+        path: /etc/my.cnf.d/server.cnf
+        block: |
+          wait_timeout=30
+          interactive_timeout=30
+          max_connections=1000
+        insertafter: "^\\[mysqld\\]"
+
     - name: install htop
       package:
         name: htop
