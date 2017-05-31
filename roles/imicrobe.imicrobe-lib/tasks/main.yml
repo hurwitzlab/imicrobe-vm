@@ -36,8 +36,8 @@
   become_user: imicrobe
   when: not imicrobe_lib_dot_git.stat.exists
 
-- name: checkout the vm branch
-  command: git checkout vm
-  args:
-    chdir: /home/imicrobe/imicrobe/lib
-  become_user: imicrobe
+#- name: checkout the vm branch
+#  command: git checkout vm
+#  args:
+#    chdir: /home/imicrobe/imicrobe/lib
+#  become_user: imicrobe

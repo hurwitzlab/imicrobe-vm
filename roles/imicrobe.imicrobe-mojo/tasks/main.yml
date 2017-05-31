@@ -31,11 +31,11 @@
   become_user: imicrobe
   when: not imicrobe_mojo_dot_git.stat.exists
 
-- name: checkout the vm branch
-  command: git checkout vm
-  args:
-    chdir: /home/imicrobe/imicrobe/lib/mojo
-  become_user: imicrobe
+#- name: checkout the vm branch
+#  command: git checkout vm
+#  args:
+#    chdir: /home/imicrobe/imicrobe/lib/mojo
+#  become_user: imicrobe
 
 - name: create imicrobe/lib/mojo/log
   file:
@@ -50,7 +50,7 @@
   become_user: imicrobe
 
 - name: install dependencies
-  command: "cpanm {{ item }} --force"
+  command: "/usr/local/bin/cpanm {{ item }} --force"
   with_items:
     - Archive::Tar
     - autodie

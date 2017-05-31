@@ -1,17 +1,21 @@
 ---
 - name: install gcc required to build some Perl modules
-  yum: name=gcc
-       state=present
-
-- name: install perl, cpan, cpanminus (must use yum for cpanminus on system perl otherwise it does not work)
   yum: 
-    name: "{{ item }}"
+    name: gcc
     state: present
-  with_items:
-    - perl
-    - perl-devel
-    - perl-CPAN
-    - cpanminus
+
+- name: install fresh perl to /usr/local/bin/perl
+  shell: |
+    cd /tmp
+    wget http://www.cpan.org/src/5.0/perl-5.24.1.tar.gz
+    tar -xzf perl-5.24.1.tar.gz
+    cd perl-5.24.1
+    ./Configure -des
+    make
+    make install
+
+- name: install cpanm
+  shell: curl -L https://cpanmin.us | /usr/local/bin/perl - --sudo App::cpanminus
 
 - name: install zlib-devel - needed for DBD::mysql
   yum:

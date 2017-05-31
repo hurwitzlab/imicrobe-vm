@@ -35,7 +35,7 @@
     line: "  host: \"localhost\""
 
 - name: Build the mongo database
-  shell: IMICROBE_CONF=/home/imicrobe/imicrobe/lib/conf/imicrobe.yaml perl scripts/load-search.pl
+  shell: IMICROBE_CONF=/home/imicrobe/imicrobe/lib/conf/imicrobe.yaml /usr/local/bin/perl scripts/load-search.pl
   args:
     chdir: /home/imicrobe/imicrobe/lib
   become_user: imicrobe
