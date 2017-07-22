@@ -1,41 +1,60 @@
 ---
-- name: install MySQL-python for ansible
-  package:
-    name: MySQL-python
-    state: latest
+  - name: Ubuntu | Install MySQL-python for ansible
+    apt:
+      name: python-mysqldb
+      state: latest
+    when:
+      ansible_distribution == 'Ubuntu'
 
-# grant all on `imicrobe`.* to `imicrobe`@localhost identified by '<password>';
-- name: Create imicrobe database user
-  mysql_user:
-    name: imicrobe
-    password: "{{ imicrobe_mysql_pw }}"
-    priv: "*.*:ALL"
-    state: present
+  - name: CentOS | Install MySQL-python for ansible
+    yum:
+      name: MySQL-python
+      state: latest
+    when:
+      ansible_distribution == 'CentOS'
 
-- name: Download imicrobe database dump to VM 
-  get_url:
-    url: ftp://ftp.imicrobe.us/database/imicrobe-latest.sql.gz
-    dest: /tmp/
+  # grant all on `imicrobe`.* to `imicrobe`@localhost identified by '<password>';
+  - name: Create imicrobe database user
+    mysql_user:
+      name: imicrobe
+      password: "{{ imicrobe_mysql_pw }}"
+      priv: "*.*:ALL"
+      state: present
 
-- name: Import imicrobe database
-  mysql_db:
-    name: imicrobe
-    state: import
-    target: /tmp/imicrobe-latest.sql.gz
+  - name: Download imicrobe database dump to VM
+    get_url:
+      url: ftp://ftp.imicrobe.us/database/imicrobe-latest.sql.gz
+      dest: /tmp/
 
-- name: Start the mongod service (there is an Ansible handler for this but I need mongo running now)
-  service:
-    name: mongod
-    state: started
+  - name: Import imicrobe database
+    mysql_db:
+      name: imicrobe
+      state: import
+      target: /tmp/imicrobe-latest.sql.gz
 
-- name: use 'localhost' for the mongo host
-  lineinfile:
-    dest: /home/imicrobe/imicrobe/lib/conf/imicrobe.yaml
-    regexp: "  host:"
-    line: "  host: \"localhost\""
+  - name: Start the mongod service (there is an Ansible handler for this but I need mongo running now)
+    service:
+      name: mongod
+      state: started
 
-- name: Build the mongo database
-  shell: IMICROBE_CONF=/home/imicrobe/imicrobe/lib/conf/imicrobe.yaml /usr/local/bin/perl scripts/load-search.pl
-  args:
-    chdir: /home/imicrobe/imicrobe/lib
-  become_user: imicrobe
+  - name: Use 'localhost' for the mongo host
+    lineinfile:
+      dest: /home/imicrobe/imicrobe/lib/conf/imicrobe.yaml
+      regexp: "  host:"
+      line: "  host: \"localhost\""
+
+  - name: Ubuntu | Build the mongo database
+    shell: IMICROBE_CONF=/home/imicrobe/imicrobe/lib/conf/imicrobe.yaml perl scripts/load-search.pl
+    args:
+      chdir: /home/imicrobe/imicrobe/lib
+    become_user: imicrobe
+    when:
+      ansible_distribution == 'Ubuntu'
+
+  - name: CentOS | Build the mongo database
+    shell: IMICROBE_CONF=/home/imicrobe/imicrobe/lib/conf/imicrobe.yaml /usr/local/bin/perl scripts/load-search.pl
+    args:
+      chdir: /home/imicrobe/imicrobe/lib
+    become_user: imicrobe
+    when:
+      ansible_distribution == 'CentOS'

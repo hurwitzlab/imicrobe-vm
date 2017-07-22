@@ -1,29 +1,9 @@
 ---
-- name: install git for ansible
-  package:
-    name: git
-    state: latest
-
-- name: install Node.js for variety
-  package:
-    name: nodejs
-    state: latest
-
-- name: install variety-cli for load-search.pl
+- name: Install variety-cli for load-search.pl
   npm:
-    name: variety-cli
-    global: yes
-
-- name: Create /usr/local/imicrobe
-  file:
-    path: /usr/local/imicrobe
-    state: directory
-
-- name: Create /home/imicrobe/imicrobe
-  file:
-    path: /home/imicrobe/imicrobe
-    state: directory
-  become_user: imicrobe
+     name: variety-cli
+     global: yes
+     executable: /usr/bin/npm
 
 - name: Has the repository already been cloned?
   stat: path=/home/imicrobe/imicrobe/lib/.git
@@ -33,11 +13,11 @@
   git:
     repo: https://github.com/hurwitzlab/imicrobe-lib.git
     dest: /home/imicrobe/imicrobe/lib
-  become_user: imicrobe
   when: not imicrobe_lib_dot_git.stat.exists
+  become_user: imicrobe
 
-#- name: checkout the vm branch
-#  command: git checkout vm
-#  args:
-#    chdir: /home/imicrobe/imicrobe/lib
-#  become_user: imicrobe
+- name: checkout the newvm branch
+  command: git checkout newvm
+  args:
+    chdir: /home/imicrobe/imicrobe/lib
+  become_user: imicrobe

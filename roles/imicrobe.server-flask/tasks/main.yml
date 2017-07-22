@@ -1,0 +1,77 @@
+---
+  - name: Ubuntu | Install Python 3.6
+    apt:
+      name: "{{ item }}"
+    with_items:
+      - python3.6
+      - python3.6-venv
+      - python3.6-dev
+    when: ansible_distribution == 'Ubuntu'
+
+  - name: CentOS | Install IUS repository for Python 3.6 packages
+    yum:
+      name: https://centos7.iuscommunity.org/ius-release.rpm
+      state: latest
+    when:
+      ansible_distribution == 'CentOS'
+
+  - name: CentOS | Install Python 3.6
+    yum:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - python36u
+      - python36u-pip
+      - python36u-devel
+    when:
+      ansible_distribution == 'CentOS'
+
+  - name: Register variable flask_imicrobe_dir
+    stat:
+      path: /home/imicrobe/imicrobe/lib/flask-imicrobe
+    register: flask_imicrobe_dir
+    become_user: imicrobe
+
+  - name: Clone the flask-imicrobe repository if it does not yet exist
+    git:
+      repo: https://github.com/hurwitzlab/flask-imicrobe.git
+      dest: /home/imicrobe/imicrobe/lib/flask-imicrobe
+    when:
+      flask_imicrobe_dir.stat.exists == false
+    become_user: imicrobe
+
+  # the output of 'git branch' will look something like this
+  # if the develop branch has been checked out:
+  #   * develop
+  #     master
+  - name: Register variable flask_imicrobe_branch
+    command: git branch
+    register: flask_imicrobe_branch
+    args:
+      chdir: /home/imicrobe/imicrobe/lib/flask-imicrobe
+    become_user: imicrobe
+
+  - name: Checkout branch 'develop' if it has not been checked out
+    command: git checkout develop
+    args:
+      chdir: /home/imicrobe/imicrobe/lib/flask-imicrobe
+    when:
+      flask_imicrobe_branch.stdout.splitlines()[0].endswith('develop') == false
+    become_user: imicrobe
+
+  - name: Register variable flask_venv_dir
+    stat:
+      path: /home/imicrobe/imicrobe/lib/flask-imicrobe/venv
+    register: flask_venv_dir
+    become_user: imicrobe
+
+  - name: Create a virtual environment for flask-imicrobe
+    command: "{{ item }}"
+    with_items:
+      - python3.6 -m venv venv
+      - venv/bin/pip install -r requirements.txt
+    args:
+      chdir: /home/imicrobe/imicrobe/lib/flask-imicrobe
+    when:
+      flask_venv_dir.stat.exists == false
+    become_user: imicrobe

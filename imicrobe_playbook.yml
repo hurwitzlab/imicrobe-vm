@@ -1,33 +1,43 @@
 ---
-- name: Install iMicrobe on CentOS 7
+- name: Install iMicrobe on Ubuntu 17.04 or CentOS 7.3
   hosts: all
   become: yes
   become_method: sudo
   vars_files:
-    - imicrobe_vars_local.yml
+    - imicrobe_vars.yml
 
   roles:
-    - { role: imicrobe.update-yum-repos }
+    - { role: imicrobe.base-server }
 
-    - { role: ontic.nginx }
-    - { role: CSC-IT-Center-for-Science.mariadb, 
+    - { role: CSCfi.mariadb,
         mariadb_state: latest,
         mariadb_root_password: "{{ root_mysql_pw }}",
-        __mariadb_packages: [mariadb-server, mariadb-devel] }
-    - { role: lesmyrmidons.mongodb, 
+        # libmariadbclient-dev installs mysql_config in 10.1
+        # libmariadb-dev installs mysql_config in 10.2
+        # 10.2 is not compatible with perl-DBD yet
+        __mariadb_packages: [mariadb-server, mariadb-client, libmariadb-dev, libmariadbclient-dev] }
+        # CentOS: __mariadb_packages: [mariadb-server, mariadb-devel] }
+
+    - { role: lesmyrmidons.mongodb,
         mongodb_version: "3.4",
+        # Ubuntu
+        url_apt_key: "http://keyserver.ubuntu.com/pks/lookup?op=get&search=",
+        id_apt_key: 0C49F3730359A14518585931BC711F9BA15703C6,
+        mongodb_repository: "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/{{ mongodb_version }} multiverse",
+        # CentOS
         mongodb_repo_baseurl: "https://repo.mongodb.org/yum/redhat/{{ ansible_distribution_major_version }}/mongodb-org/{{ mongodb_version }}/x86_64/",
         mongodb_repo_gpgcheck: yes,
         mongodb_repo_gpgkey: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc" }
 
-    - { role: imicrobe.account }
-    - { role: imicrobe.mojolicious }
-
-    - { role: imicrobe.imicrobe-lib }
-    - { role: imicrobe.imicrobe-mojo }
-    - { role: imicrobe.import-dbs }
-
     - { role: imicrobe.nginx }
+
+    - { role: imicrobe.account }
+    - { role: imicrobe.imicrobe-lib }
+    - { role: imicrobe.client-elm-spa }
+    - { role: imicrobe.server-mojolicious }
+    - { role: imicrobe.server-flask }
+    - { role: imicrobe.server-nodejs }
+    - { role: imicrobe.import-dbs }
 
   tasks:
     # the default wait_timeout and interactive_timeout are very high and we
@@ -38,14 +48,12 @@
     # I tried using with_items here but only the last item appeared in the file
     - name: configure MariaDB server connection wait_timeout and interactive_timeout
       blockinfile:
-        path: /etc/my.cnf.d/server.cnf
+        # MariaDB 10.0
+        #path: /etc/my.cnf.d/server.cnf
+        # MariaDB 10.1
+        path: /etc/mysql/conf.d/mariadb.cnf
         block: |
           wait_timeout=30
           interactive_timeout=30
           max_connections=1000
         insertafter: "^\\[mysqld\\]"
-
-    - name: install htop
-      package:
-        name: htop
-        state: latest

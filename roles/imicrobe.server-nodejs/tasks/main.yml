@@ -1,0 +1,15 @@
+---
+  - name: Clone the node-imicrobe repository
+    git:
+      repo: https://github.com/hurwitzlab/node-imicrobe.git
+      dest: /home/imicrobe/imicrobe/lib/node-imicrobe
+    become_user: imicrobe
+
+  - name: Install node-imicrobe
+    command: "{{ item }}"
+    with_items:
+      - cp config.json.default config.json
+      - npm install
+    args:
+      chdir: /home/imicrobe/imicrobe/lib/node-imicrobe
+    become_user: imicrobe

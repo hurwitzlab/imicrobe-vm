@@ -1,24 +1,8 @@
 ---
-- name: install git for ansible
-  package:
-    name: git
-    state: latest
-
-- name: install Node.js
-  package:
-    name: nodejs
-    state: latest
-
 - name: install Bower
   npm:
     name: bower
     global: yes
-
-- name: Create /home/imicrobe/imicrobe
-  file:
-    path: /home/imicrobe/imicrobe
-    state: directory
-  become_user: imicrobe
 
 - name: Has the repository already been cloned?
   stat: path=/home/imicrobe/imicrobe/lib/mojo/.git
@@ -49,8 +33,10 @@
     chdir: /home/imicrobe/imicrobe/lib/mojo
   become_user: imicrobe
 
+# try --notest rather than --force to reduce installation time
+# --force was used to install a module if the tests failed
 - name: install dependencies
-  command: "/usr/local/bin/cpanm {{ item }} --force"
+  command: "/usr/local/bin/cpanm {{ item }} --notest"
   with_items:
     - Archive::Tar
     - autodie
@@ -70,6 +56,7 @@
     - LWP::UserAgent
     - Mail::Sendmail
     - NetAddr::IP
+    - Net::DNS
     - Mail::SpamAssassin
     - Mojolicious
     - Mojolicious::Plugin::JSONConfig
