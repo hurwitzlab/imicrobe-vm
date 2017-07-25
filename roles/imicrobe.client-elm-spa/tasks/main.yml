@@ -1,0 +1,20 @@
+---
+  - name: Install Elm
+    command: npm install -g elm
+
+  - name: Clone the elm-imicrobe-spa repository
+    git:
+      repo: https://github.com/hurwitzlab/elm-imicrobe-spa.git
+      dest: /home/imicrobe/imicrobe/lib/elm-imicrobe-spa
+    become_user: imicrobe
+
+  - name: Build elm-imicrobe-spa
+    command: "{{ item }}"
+    with_items:
+      - cp config.json.default config.json
+      - elm package install -y
+      - npm install
+      - npm run build
+    args:
+      chdir: /home/imicrobe/imicrobe/lib/elm-imicrobe-spa
+    become_user: imicrobe

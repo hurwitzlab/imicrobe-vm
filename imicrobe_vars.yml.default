@@ -1,0 +1,20 @@
+---
+# make a copy of this file called 'imicrobe_vars_local.yml'
+# and insert the missing information
+
+root_mysql_pw:
+
+imicrobe_mysql_pw: 
+
+imicrobe_secret: 
+imicrobe_gmap_api_key: 
+imicrobe_google_analytics_key: 
+
+imicrobe_tacc_public: 
+imicrobe_tacc_private: 
+imicrobe_tacc_redirect_url:
+
+imicrobe_mongo_host:
+
+imicrobe_captcha_public_key:
+imicrobe_captcha_private_key:
