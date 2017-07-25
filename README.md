@@ -8,12 +8,12 @@ In addition the Ansible script relies on the following roles available from ansi
  + CSCfi.mariadb
  + lesmyrmidons.mongodb
 
-It is recommended that Ansible be installed in a Python virtual environment. A convenient method is to use [Miniconda3](https://conda.io/docs/install/quick.html#os-x-miniconda-install) because it supports both Python 2.7 and Python 3 virtual environments.
+It is recommended that Ansible be installed in a Python virtual environment. A convenient method is to use [Miniconda3](https://conda.io/docs/install/quick.html#os-x-miniconda-install).
 
-Here is one way to do that:
+After installing Miniconda3 create a virtual environment and install Ansible like this:
 
 ```
-$ conda create python=2.7 --name imicrobevm
+$ conda create python=3.6 --name imicrobevm
 $ source activate imicrobevm
 (imicrobevm)$ pip install ansible
 (imicrobevm)$ ansible-galaxy install CSCfi.mariadb
@@ -52,4 +52,5 @@ $ source activate imicrobevm
 
 ## Development
 Access to data.imicrobe.us is available through 127.0.0.1:8000.
+
 Access to imicrobe.us is available through 127.0.0.1:8001.
