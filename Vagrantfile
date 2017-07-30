@@ -5,8 +5,6 @@ Vagrant.configure("2") do |config|
   # Every Vagrant development environment requires a box. You can search for
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "bento/ubuntu-17.04"
-  # it has been very difficult to install the latest NodeJS on centos-7.3
-  # moving to ubuntu-16.04 might help
   ##config.vm.box = "bento/centos-7.3"
 
   config.vm.network "forwarded_port", host: 8000, guest: 80

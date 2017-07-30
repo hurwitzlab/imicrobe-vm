@@ -8,6 +8,10 @@
       - python3.6-dev
     when: ansible_distribution == 'Ubuntu'
 
+  - name: Ubuntu | Install pip, setuptools, wheel (why no apt package?)
+    command: curl https://bootstrap.pypa.io/get-pip.py | python3.6
+    when: ansible_distribution == 'Ubuntu'
+
   - name: CentOS | Install IUS repository for Python 3.6 packages
     yum:
       name: https://centos7.iuscommunity.org/ius-release.rpm
@@ -69,6 +73,8 @@
     command: "{{ item }}"
     with_items:
       - python3.6 -m venv venv
+      - venv/bin/pip install setuptools --upgrade
+      - venv/bin/pip install wheel
       - venv/bin/pip install -r requirements.txt
     args:
       chdir: /home/imicrobe/imicrobe/lib/flask-imicrobe
