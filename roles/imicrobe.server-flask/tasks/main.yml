@@ -76,6 +76,7 @@
       - venv/bin/pip install setuptools --upgrade
       - venv/bin/pip install wheel
       - venv/bin/pip install -r requirements.txt
+      - venv/bin/pip install gunicorn
     args:
       chdir: /home/imicrobe/imicrobe/lib/flask-imicrobe
     when:

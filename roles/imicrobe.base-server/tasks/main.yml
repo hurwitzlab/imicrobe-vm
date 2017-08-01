@@ -4,6 +4,8 @@
     with_items:
       - apt update
       - apt -y full-upgrade
+    environment:
+      DEBIAN_FRONTEND: noninteractive
     when:
       ansible_distribution == 'Ubuntu'
 
@@ -28,9 +30,7 @@
     shell: "{{ item }}"
     with_items:
       - "curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -"
-      - "apt-get install -y nodejs"
-      #- "npm install -g n"
-      #- "n latest"
+      - "apt install -y nodejs"
       - "npm uninstall --save node-uuid"  # this module is deprecated and
       - "npm install --save uuid"         # causes other installs to fail
     when:
