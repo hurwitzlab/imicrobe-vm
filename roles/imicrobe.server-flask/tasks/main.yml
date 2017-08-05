@@ -9,7 +9,7 @@
     when: ansible_distribution == 'Ubuntu'
 
   - name: Ubuntu | Install pip, setuptools, wheel (why no apt package?)
-    command: curl https://bootstrap.pypa.io/get-pip.py | python3.6
+    shell: curl https://bootstrap.pypa.io/get-pip.py | python3.6
     when: ansible_distribution == 'Ubuntu'
 
   - name: CentOS | Install IUS repository for Python 3.6 packages

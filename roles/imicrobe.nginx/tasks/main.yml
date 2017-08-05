@@ -14,6 +14,11 @@
     when:
       ansible_distribution == 'Ubuntu'
 
+  - name: Ubuntu | Remove 'default' link from /etc/nginx/sites-enabled/
+    command: rm /etc/nginx/sites-enabled/default
+    when:
+      ansible_distribution == 'Ubuntu'
+
   #- stat: path=/etc/nginx/conf.d/imicrobe.conf
   #  register: imicrobe_conf
 
@@ -23,14 +28,35 @@
   #    dest: /etc/nginx/conf.d/
   #  when: imicrobe_conf.stat.exists == False
 
-  - stat: path=/etc/nginx/conf.d/imicrobe-node.conf
+  - stat: path=/etc/nginx/sites-available/imicrobe-node.conf
     register: imicrobe_node_conf
 
   - name: Configure nginx with imicrobe-node.conf
     copy:
       src: files/imicrobe-node.conf
-      dest: /etc/nginx/conf.d/
+      dest: /etc/nginx/sites-available/
     when: imicrobe_node_conf.stat.exists == False
+
+  - name: Enable the imicrobe-node virtual host
+    file:
+      src: /etc/nginx/sites-available/imicrobe-node.conf
+      dest: /etc/nginx/sites-enabled/imicrobe-node.conf
+      state: link
+
+  - stat: path=/etc/nginx/sites-available/imicrobe-flask.conf
+    register: imicrobe_flask_conf
+
+  - name: Configure nginx with imicrobe-flask.conf
+    copy:
+      src: files/imicrobe-flask.conf
+      dest: /etc/nginx/sites-available/
+    when: imicrobe_flask_conf.stat.exists == False
+
+  - name: Enable the imicrobe-flask virtual host
+    file:
+      src: /etc/nginx/sites-available/imicrobe-flask.conf
+      dest: /etc/nginx/sites-enabled/imicrobe-flask.conf
+      state: link
 
   - name: Create the /etc/ssl/self-signed directory
     file:
