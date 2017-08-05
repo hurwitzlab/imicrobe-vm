@@ -5,7 +5,7 @@ sudo: required
 dist: trusty
 before_install:
 - sudo apt install -y vagrant virtualbox
-- sudo pip install -y ansible
+- sudo pip install ansible
 install:
 - vagrant up
 script:
