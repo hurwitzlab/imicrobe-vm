@@ -15,8 +15,18 @@
         # libmariadbclient-dev installs mysql_config in 10.1
         # libmariadb-dev installs mysql_config in 10.2
         # 10.2 is not compatible with perl-DBD yet
-        __mariadb_packages: [mariadb-server, mariadb-client, libmariadb-dev, libmariadbclient-dev] }
-        # CentOS: __mariadb_packages: [mariadb-server, mariadb-devel] }
+        __mariadb_packages: [mariadb-server, mariadb-client, libmariadb-dev, libmariadbclient-dev],
+        when:
+          ansible_distribution_major_version == 'Ubuntu'
+      }
+
+    - { role: CSCfi.mariadb,
+        mariadb_state: latest,
+        mariadb_root_password: "{{ root_mysql_pw }}",
+        __mariadb_packages: [mariadb-server, mariadb-devel],
+        when:
+          ansible_distribution_major_version == 'CentOS'
+      }
 
     - { role: lesmyrmidons.mongodb,
         mongodb_version: "3.4",
