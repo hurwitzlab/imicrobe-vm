@@ -16,8 +16,7 @@ After installing Miniconda3 create a virtual environment and install Ansible lik
 $ conda create python=3.6 --name imicrobevm
 $ source activate imicrobevm
 (imicrobevm)$ pip install ansible
-(imicrobevm)$ ansible-galaxy install CSCfi.mariadb
-(imicrobevm)$ ansible-galaxy install lesmyrmidons.mongodb
+(imicrobevm)$ ansible-galaxy install -p ~/etc/ansible/roles -r ansible.galaxy.roles.yml
 ```
 
 ### Install vagrant-vbguest plugin
