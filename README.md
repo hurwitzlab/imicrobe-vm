@@ -2,13 +2,24 @@
 Scripts to build and provision a VM running iMicrobe.
 
 ## Requirements
-Building a VM with these scripts requires [Vagrant](https://www.vagrantup.com/), [VirtualBox](https://www.virtualbox.org/), and [Ansible](https://www.ansible.com/).
+Building a VM with these scripts requires [Vagrant](https://www.vagrantup.com/), [VirtualBox](https://www.virtualbox.org/), and [Ansible](https://www.ansible.com/). Installing Vagrant and VirtualBox will not be described here. Steps to install Ansible are given below.
 
 In addition the Ansible script relies on the following roles available from ansible-galaxy:
  + CSCfi.mariadb
  + lesmyrmidons.mongodb
 
-It is recommended that Ansible be installed in a Python virtual environment. A convenient method is to use [Miniconda3](https://conda.io/docs/install/quick.html#os-x-miniconda-install).
+Instructions for installing these roles are given below.
+
+It is recommended that Ansible be installed in a Python 3.6+ virtual environment. If a Python 3.6+ interpreter is available then a virtual environment can be created like this:
+
+```
+$ python3 -m venv ~/venv/imicrobevm
+$ source ~/venv/imicrobevm/bin/activate
+(imicrobevm)$ pip install ansible
+(imicrobevm)$ ansible-galaxy install -r ansible.galaxy.roles.yml
+```
+
+If a Python 3.6+ interpreter is not already available then a convenient method is to install one is with [Miniconda3](https://conda.io/docs/install/quick.html#os-x-miniconda-install).
 
 After installing Miniconda3 create a virtual environment and install Ansible like this:
 
@@ -16,8 +27,7 @@ After installing Miniconda3 create a virtual environment and install Ansible lik
 $ conda create python=3.6 --name imicrobevm
 $ source activate imicrobevm
 (imicrobevm)$ pip install ansible
-(imicrobevm)$ ansible-galaxy install CSCfi.mariadb
-(imicrobevm)$ ansible-galaxy install lesmyrmidons.mongodb
+(imicrobevm)$ ansible-galaxy install -r ansible.galaxy.roles.yml
 ```
 
 ### Install vagrant-vbguest plugin
