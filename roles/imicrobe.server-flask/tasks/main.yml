@@ -63,15 +63,10 @@
       flask_imicrobe_branch.stdout.splitlines()[0].endswith('develop') == false
     become_user: imicrobe
 
-  - name: Register variable flask_venv_dir
-    stat:
-      path: /home/imicrobe/imicrobe/lib/flask-imicrobe/venv
-    register: flask_venv_dir
-    become_user: imicrobe
-
-  - name: Create a virtual environment for flask-imicrobe
+  - name: Create a production virtual environment for flask-imicrobe
     command: "{{ item }}"
     with_items:
+      - rm -rf venv
       - python3.6 -m venv venv
       - venv/bin/pip install setuptools --upgrade
       - venv/bin/pip install wheel
@@ -79,6 +74,29 @@
       - venv/bin/pip install gunicorn
     args:
       chdir: /home/imicrobe/imicrobe/lib/flask-imicrobe
-    when:
-      flask_venv_dir.stat.exists == false
     become_user: imicrobe
+
+  - name: Create a development virtual environment for flask-imicrobe
+    command: "{{ item }}"
+    with_items:
+      - rm -rf venv
+      - python3.6 -m venv venv
+      - venv/bin/pip install setuptools --upgrade
+      - venv/bin/pip install wheel
+      - venv/bin/pip install -r /home/imicrobe/imicrobe/lib/flask-imicrobe/requirements.txt
+      - venv/bin/pip install gunicorn
+    args:
+      chdir: /home/vagrant
+    become: false
+
+  - name: Set IMICROBE_DB_URI for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.profile
+      line: export IMICROBE_DB_URI=mysql+pymysql://imicrobe:{{ imicrobe_mysql_pw }}@127.0.0.1/imicrobe
+    become: false
+
+  - name: Set IMICROBE_FLASK_CONFIG for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.profile
+      line: export IMICROBE_FLASK_CONFIG=development
+    become: false

@@ -4,16 +4,12 @@
       name: epel-release
       enablerepo: extras
       state: latest
-    when:
-      ansible_distribution == 'CentOS'
 
   - name: CentOS | Update system packages
     yum:
       name: "*"
       update_cache: yes
       state: latest
-    when:
-      ansible_distribution == 'CentOS'
 
   - name: CentOS | Install basic packages and development tools
     yum:
@@ -26,8 +22,6 @@
       - zlib-devel
       - openssl-devel
       - htop
-    when:
-      ansible_distribution == 'CentOS'
 
   - name: CentOS | Install fresh Perl to /usr/local/bin/perl
     shell: |
@@ -38,13 +32,9 @@
       ./Configure -des
       make
       make install
-    when:
-      ansible_distribution == 'CentOS'
 
   - name: CentOS | Install cpanm
     shell: curl -L https://cpanmin.us | /usr/local/bin/perl - --sudo App::cpanminus
-    when:
-      ansible_distribution == 'CentOS'
 
   - name: CentOS | Install Node.js 7.x + npm 4.x (npm 5.x is broken)
     shell: "{{ item }}"
@@ -53,8 +43,6 @@
       - "yum install -y nodejs"
       - "npm uninstall --save node-uuid"  # this module is deprecated and
       - "npm install --save uuid"         # causes other installs to fail
-    when:
-      ansible_distribution == 'CentOS'
 
   - name: CentOS | Add MariaDB 10.1 yum repository but install later
     yum_repository:
@@ -64,5 +52,3 @@
       baseurl: http://yum.mariadb.org/10.1/centos7-amd64
       gpgkey: https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
       gpgcheck: yes
-    when:
-      ansible_distribution == 'CentOS'

@@ -1,0 +1,44 @@
+---
+  - name: Ubuntu | Install nginx
+    apt:
+      name: "{{ item }}"
+      update_cache: yes
+    with_items:
+      - nginx
+      - certbot
+
+  - name: Ubuntu | Configure the firewall
+    command: "ufw allow 'Nginx Full'"
+
+  - name: Ubuntu | Remove 'default' link from /etc/nginx/sites-enabled/
+    command: rm /etc/nginx/sites-enabled/default
+
+  - stat: path=/etc/nginx/sites-available/imicrobe-node.conf
+    register: imicrobe_node_conf
+
+  - name: Configure nginx with imicrobe-node.conf
+    copy:
+      src: files/imicrobe-node.conf
+      dest: /etc/nginx/sites-available/
+    when: imicrobe_node_conf.stat.exists == False
+
+  - name: Enable the imicrobe-node virtual host
+    file:
+      src: /etc/nginx/sites-available/imicrobe-node.conf
+      dest: /etc/nginx/sites-enabled/imicrobe-node.conf
+      state: link
+
+  - stat: path=/etc/nginx/sites-available/imicrobe-flask.conf
+    register: imicrobe_flask_conf
+
+  - name: Configure nginx with imicrobe-flask.conf
+    copy:
+      src: files/imicrobe-flask.conf
+      dest: /etc/nginx/sites-available/
+    when: imicrobe_flask_conf.stat.exists == False
+
+  - name: Enable the imicrobe-flask virtual host
+    file:
+      src: /etc/nginx/sites-available/imicrobe-flask.conf
+      dest: /etc/nginx/sites-enabled/imicrobe-flask.conf
+      state: link

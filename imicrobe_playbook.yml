@@ -17,7 +17,7 @@
         # 10.2 is not compatible with perl-DBD yet
         __mariadb_packages: [mariadb-server, mariadb-client, libmariadb-dev, libmariadbclient-dev],
         when:
-          ansible_distribution_major_version == 'Ubuntu'
+          ansible_distribution == 'Ubuntu'
       }
 
     - { role: CSCfi.mariadb,
@@ -25,7 +25,7 @@
         mariadb_root_password: "{{ root_mysql_pw }}",
         __mariadb_packages: [mariadb-server, mariadb-devel],
         when:
-          ansible_distribution_major_version == 'CentOS'
+          ansible_distribution == 'CentOS'
       }
 
     - { role: lesmyrmidons.mongodb,
@@ -43,7 +43,7 @@
 
     - { role: imicrobe.account }
     - { role: imicrobe.imicrobe-lib }
-    - { role: imicrobe.client-elm-spa }
+    #- { role: imicrobe.client-elm-spa }
     - { role: imicrobe.server-mojolicious }
     - { role: imicrobe.server-flask }
     - { role: imicrobe.server-nodejs }
@@ -67,3 +67,19 @@
           interactive_timeout=30
           max_connections=1000
         insertafter: "^\\[mysqld\\]"
+      when:
+        ansible_distribution == "Ubuntu"
+
+    - name: configure MariaDB server connection wait_timeout and interactive_timeout
+      blockinfile:
+        # MariaDB 10.0
+        #path: /etc/my.cnf.d/server.cnf
+        # MariaDB 10.1
+        path: /etc/my.cnf
+        block: |
+          wait_timeout=30
+          interactive_timeout=30
+          max_connections=1000
+        insertafter: "^\\[mysqld\\]"
+      when:
+        ansible_distribution == "CentOS"
