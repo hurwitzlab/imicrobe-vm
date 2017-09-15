@@ -61,6 +61,4 @@ $ source activate imicrobevm
 ```
 
 ## Development
-Access to data.imicrobe.us is available through 127.0.0.1:8000.
-
-Access to imicrobe.us is available through 127.0.0.1:8001.
+Access to the server is available through https://localhost:8443/.
