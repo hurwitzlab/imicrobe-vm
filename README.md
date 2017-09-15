@@ -60,7 +60,7 @@ $ source activate imicrobevm
 (imicrobevm)$ vagrant up
 ```
 
-## Restart Nginx
+### Restart Nginx
 Log in to the VM and restart Nginx.
 
 ```
