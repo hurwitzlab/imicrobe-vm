@@ -60,5 +60,13 @@ $ source activate imicrobevm
 (imicrobevm)$ vagrant up
 ```
 
+## Restart Nginx
+Log in to the VM and restart Nginx.
+
+```
+$ vagrant ssh
+vagrant@vagrant:~$ sudo systemctl restart nginx
+```
+
 ## Development
 Access to the server is available through https://localhost:8443/.
