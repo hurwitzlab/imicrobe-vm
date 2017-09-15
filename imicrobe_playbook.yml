@@ -43,8 +43,8 @@
 
     - { role: imicrobe.account }
     - { role: imicrobe.imicrobe-lib }
-    #- { role: imicrobe.client-elm-spa }
     - { role: imicrobe.server-mojolicious }
+    - { role: imicrobe.client-elm-spa }
     - { role: imicrobe.server-flask }
     - { role: imicrobe.server-nodejs }
     - { role: imicrobe.import-dbs }

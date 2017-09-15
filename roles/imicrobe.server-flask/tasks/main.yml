@@ -39,7 +39,7 @@
   - name: Clone the flask-imicrobe repository if it does not yet exist
     git:
       repo: https://github.com/hurwitzlab/flask-imicrobe.git
-      dest: /home/imicrobe/imicrobe/lib/flask-imicrobe
+      dest: /home/imicrobe/flask-imicrobe
     when:
       flask_imicrobe_dir.stat.exists == false
     become_user: imicrobe
@@ -52,13 +52,13 @@
     command: git branch
     register: flask_imicrobe_branch
     args:
-      chdir: /home/imicrobe/imicrobe/lib/flask-imicrobe
+      chdir: /home/imicrobe/flask-imicrobe
     become_user: imicrobe
 
   - name: Checkout branch 'develop' if it has not been checked out
     command: git checkout develop
     args:
-      chdir: /home/imicrobe/imicrobe/lib/flask-imicrobe
+      chdir: /home/imicrobe/flask-imicrobe
     when:
       flask_imicrobe_branch.stdout.splitlines()[0].endswith('develop') == false
     become_user: imicrobe
@@ -66,25 +66,25 @@
   - name: Create a production virtual environment for flask-imicrobe
     command: "{{ item }}"
     with_items:
-      - rm -rf venv
-      - python3.6 -m venv venv
-      - venv/bin/pip install setuptools --upgrade
-      - venv/bin/pip install wheel
-      - venv/bin/pip install -r requirements.txt
-      - venv/bin/pip install gunicorn
+      - rm -rf flim
+      - python3.6 -m venv flim
+      - flim/bin/pip install setuptools --upgrade
+      - flim/bin/pip install wheel
+      - flim/bin/pip install -r requirements.txt
+      - flim/bin/pip install gunicorn
     args:
-      chdir: /home/imicrobe/imicrobe/lib/flask-imicrobe
+      chdir: /home/imicrobe/flask-imicrobe
     become_user: imicrobe
 
   - name: Create a development virtual environment for flask-imicrobe
     command: "{{ item }}"
     with_items:
-      - rm -rf venv
-      - python3.6 -m venv venv
-      - venv/bin/pip install setuptools --upgrade
-      - venv/bin/pip install wheel
-      - venv/bin/pip install -r /home/imicrobe/imicrobe/lib/flask-imicrobe/requirements.txt
-      - venv/bin/pip install gunicorn
+      - rm -rf flim
+      - python3.6 -m venv flim
+      - flim/bin/pip install setuptools --upgrade
+      - flim/bin/pip install wheel
+      - flim/bin/pip install -r /home/imicrobe/flask-imicrobe/requirements.txt
+      - flim/bin/pip install gunicorn
     args:
       chdir: /home/vagrant
     become: false
