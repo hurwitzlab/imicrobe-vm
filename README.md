@@ -19,7 +19,7 @@ $ source ~/venv/imicrobevm/bin/activate
 (imicrobevm)$ ansible-galaxy install -r ansible.galaxy.roles.yml
 ```
 
-If a Python 3.6+ interpreter is not already available then a convenient method is to install one is with [Miniconda3](https://conda.io/docs/install/quick.html#os-x-miniconda-install).
+If a Python 3.6+ interpreter is not already available then a convenient method to install one is with [Miniconda3](https://conda.io/docs/install/quick.html#os-x-miniconda-install).
 
 After installing Miniconda3 create a virtual environment and install Ansible like this:
 
