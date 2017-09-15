@@ -1,0 +1,26 @@
+---
+  - name: CentOS | Install IUS repository for Python 3.6 packages
+    yum:
+      name: https://centos7.iuscommunity.org/ius-release.rpm
+      state: latest
+
+  - name: CentOS | Install Python 3.6
+    yum:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - python36u
+      - python36u-pip
+      - python36u-devel
+
+  - name: CentOS | Set IMICROBE_DB_URI for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.bash_profile
+      line: export IMICROBE_DB_URI=mysql+pymysql://imicrobe:{{ imicrobe_mysql_pw }}@127.0.0.1/imicrobe
+    become: false
+
+  - name: CentOS | Set IMICROBE_FLASK_CONFIG for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.bash_profile
+      line: export IMICROBE_FLASK_CONFIG=development
+    become: false

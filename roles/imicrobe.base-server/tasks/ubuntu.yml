@@ -6,8 +6,6 @@
       - apt -y full-upgrade
     environment:
       DEBIAN_FRONTEND: noninteractive
-    when:
-      ansible_distribution == 'Ubuntu'
 
   - name: Ubuntu | Install basic packages and development tools
     apt:
@@ -18,13 +16,9 @@
       - build-essential
       - libssl-dev
       - htop
-    when:
-      ansible_distribution == 'Ubuntu'
 
   - name: Ubuntu | Install cpanm
     shell: curl -L https://cpanmin.us | perl - --sudo App::cpanminus
-    when:
-      ansible_distribution == 'Ubuntu'
 
   - name: Ubuntu | Install node 7.x + npm 4.x (node 8.x + npm 5.x are broken)
     shell: "{{ item }}"
@@ -33,8 +27,6 @@
       - "apt install -y nodejs"
       - "npm uninstall --save node-uuid"  # this module is deprecated and
       - "npm install --save uuid"         # causes other installs to fail
-    when:
-      ansible_distribution == 'Ubuntu'
 
   # 10.2 is not compatible with perl-DBD yet
   - name: Ubuntu | add MariaDB 10.1 apt repository key but install later
@@ -44,5 +36,3 @@
       - add-apt-repository 'deb [arch=amd64] http://ftp.heanet.ie/mirrors/mariadb/repo/10.1/ubuntu yakkety main'
       - apt update
       # installing here hangs I don't know why
-    when:
-      ansible_distribution == 'Ubuntu'

@@ -1,38 +1,15 @@
 ---
-  - name: Ubuntu | Install Python 3.6
-    apt:
-      name: "{{ item }}"
-    with_items:
-      - python3.6
-      - python3.6-venv
-      - python3.6-dev
-    when: ansible_distribution == 'Ubuntu'
-
-  - name: Ubuntu | Install pip, setuptools, wheel (why no apt package?)
-    shell: curl https://bootstrap.pypa.io/get-pip.py | python3.6
-    when: ansible_distribution == 'Ubuntu'
-
-  - name: CentOS | Install IUS repository for Python 3.6 packages
-    yum:
-      name: https://centos7.iuscommunity.org/ius-release.rpm
-      state: latest
+  - include: "centos.yml"
     when:
-      ansible_distribution == 'CentOS'
+      ansible_distribution == "CentOS"
 
-  - name: CentOS | Install Python 3.6
-    yum:
-      name: "{{ item }}"
-      state: latest
-    with_items:
-      - python36u
-      - python36u-pip
-      - python36u-devel
+  - include: "ubuntu.yml"
     when:
-      ansible_distribution == 'CentOS'
+      ansible_distribution == "Ubuntu"
 
   - name: Register variable flask_imicrobe_dir
     stat:
-      path: /home/imicrobe/imicrobe/lib/flask-imicrobe
+      path: /home/imicrobe/flask-imicrobe
     register: flask_imicrobe_dir
     become_user: imicrobe
 
@@ -87,16 +64,6 @@
       - flim/bin/pip install gunicorn
     args:
       chdir: /home/vagrant
-    become: false
-
-  - name: Set IMICROBE_DB_URI for development as vagrant user
-    lineinfile:
-      path: /home/vagrant/.profile
-      line: export IMICROBE_DB_URI=mysql+pymysql://imicrobe:{{ imicrobe_mysql_pw }}@127.0.0.1/imicrobe
-    become: false
-
-  - name: Set IMICROBE_FLASK_CONFIG for development as vagrant user
-    lineinfile:
-      path: /home/vagrant/.profile
-      line: export IMICROBE_FLASK_CONFIG=development
-    become: false
+    # next line causes failure in CentOS permission denied to read requirements.txt but not Ubuntu (?)
+    # will the user be root?
+    #become: false

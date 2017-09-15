@@ -10,17 +10,8 @@
   - stat: path=/etc/nginx/conf.d/imicrobe-node.conf
     register: imicrobe_node_conf
 
-  - name: Configure nginx with imicrobe-node.conf
+  - name: CentOS | Configure nginx with imicrobe-node.conf
     copy:
       src: files/imicrobe-node.conf
       dest: /etc/nginx/conf.d/
     when: imicrobe_node_conf.stat.exists == False
-
-  - stat: path=/etc/nginx/conf.d/imicrobe-flask.conf
-    register: imicrobe_flask_conf
-
-  - name: Configure nginx with imicrobe-flask.conf
-    copy:
-      src: files/imicrobe-flask.conf
-      dest: /etc/nginx/conf.d/
-    when: imicrobe_flask_conf.stat.exists == False
