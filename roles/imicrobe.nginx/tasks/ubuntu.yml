@@ -29,18 +29,3 @@
       src: /etc/nginx/sites-available/imicrobe-node.conf
       dest: /etc/nginx/sites-enabled/imicrobe-node.conf
       state: link
-
-  #- stat: path=/etc/nginx/sites-available/imicrobe-flask.conf
-  #  register: imicrobe_flask_conf
-
-  #- name: Configure nginx with imicrobe-flask.conf
-  #  copy:
-  #    src: files/imicrobe-flask.conf
-  #    dest: /etc/nginx/sites-available/
-  #  when: imicrobe_flask_conf.stat.exists == False
-
-  #- name: Enable the imicrobe-flask virtual host
-  #  file:
-  #    src: /etc/nginx/sites-available/imicrobe-flask.conf
-  #    dest: /etc/nginx/sites-enabled/imicrobe-flask.conf
-  #    state: link
