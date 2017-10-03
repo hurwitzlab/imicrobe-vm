@@ -21,3 +21,9 @@
       path: /home/vagrant/.profile
       line: export IMICROBE_FLASK_CONFIG=development
     become: false
+
+  - name: Ubuntu | Set IMICROBE_FLASK_SESSION_SECRET_KEY for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.profile
+      line: export IMICROBE_FLASK_SESSION_SECRET_KEY={{ imicrobe_flask_session_secret_key }}
+    become: false

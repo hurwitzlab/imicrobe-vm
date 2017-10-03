@@ -24,3 +24,9 @@
       path: /home/vagrant/.bash_profile
       line: export IMICROBE_FLASK_CONFIG=development
     become: false
+
+  - name: CentOS | Set IMICROBE_FLASK_SESSION_SECRET_KEY for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.bash_profile
+      line: export IMICROBE_FLASK_SESSION_SECRET_KEY={{ imicrobe_flask_session_secret_key }}
+    become: false
