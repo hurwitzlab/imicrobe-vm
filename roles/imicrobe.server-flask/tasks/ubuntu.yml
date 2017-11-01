@@ -1,0 +1,48 @@
+---
+  - name: Ubuntu | Install Python 3.6
+    apt:
+      name: "{{ item }}"
+    with_items:
+      - python3.6
+      - python3.6-venv
+      - python3.6-dev
+
+  - name: Ubuntu | Install pip, setuptools, wheel (why no apt package?)
+    shell: curl https://bootstrap.pypa.io/get-pip.py | python3.6
+
+  - name: Ubuntu | Set IMICROBE_DB_URI for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.profile
+      line: export IMICROBE_DB_URI=mysql+pymysql://imicrobe:{{ imicrobe_mysql_pw }}@127.0.0.1/imicrobe
+    become: false
+
+  - name: Ubuntu | Set IMICROBE_FLASK_CONFIG for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.profile
+      line: export IMICROBE_FLASK_CONFIG=development
+    become: false
+
+  - name: Ubuntu | Set IMICROBE_FLASK_SESSION_SECRET_KEY for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.profile
+      line: export IMICROBE_FLASK_SESSION_SECRET_KEY={{ imicrobe_flask_session_secret_key }}
+    become: false
+
+  - name: Ubuntu | Set IMICROBE_FLASK_ADMIN_PW
+    lineinfile:
+      path: /home/vagrant/.profile
+      line: export IMICROBE_FLASK_ADMIN_PW={{ imicrobe_flask_admin_interface_pw }}
+    become: false
+
+  - name: Ubuntu | Create a development virtual environment for flask-imicrobe
+    command: "{{ item }}"
+    with_items:
+      - rm -rf flim
+      - python3.6 -m venv flim
+      - flim/bin/pip install setuptools --upgrade
+      - flim/bin/pip install wheel
+    args:
+      chdir: /home/vagrant
+    # next line causes failure in CentOS permission denied to read requirements.txt but not Ubuntu (?)
+    # want become: false so virtual environment directory will be owned by vagrant user
+    become_user: vagrant

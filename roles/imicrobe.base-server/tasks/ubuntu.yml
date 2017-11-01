@@ -1,0 +1,38 @@
+---
+  - name: Ubuntu | Update the system
+    command: "{{ item }}"
+    with_items:
+      - apt update
+      - apt -y full-upgrade
+    environment:
+      DEBIAN_FRONTEND: noninteractive
+
+  - name: Ubuntu | Install basic packages and development tools
+    apt:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - apt-utils
+      - build-essential
+      - libssl-dev
+      - htop
+
+  - name: Ubuntu | Install cpanm
+    shell: curl -L https://cpanmin.us | perl - --sudo App::cpanminus
+
+  - name: Ubuntu | Install node 7.x + npm 4.x (node 8.x + npm 5.x are broken)
+    shell: "{{ item }}"
+    with_items:
+      - "curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -"
+      - "apt install -y nodejs"
+      - "npm uninstall --save node-uuid"  # this module is deprecated and
+      - "npm install --save uuid"         # causes other installs to fail
+
+  # 10.2 is not compatible with perl-DBD yet
+  - name: Ubuntu | add MariaDB 10.1 apt repository key but install later
+    command: "{{ item }}"
+    with_items:
+      - apt-key adv --recv-keys --keyserver hkp://keyserver.ubuntu.com:80 0xF1656F24C74CD1D8
+      - add-apt-repository 'deb [arch=amd64] http://ftp.heanet.ie/mirrors/mariadb/repo/10.1/ubuntu yakkety main'
+      - apt update
+      # installing here hangs I don't know why

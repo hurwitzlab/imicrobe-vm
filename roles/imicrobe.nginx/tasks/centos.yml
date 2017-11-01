@@ -1,0 +1,17 @@
+---
+  - name: CentOS | Install nginx
+    yum:
+      name: "{{ item }}"
+      update_cache: yes
+    with_items:
+      - nginx
+      - certbot
+
+  - stat: path=/etc/nginx/conf.d/imicrobe-node.conf
+    register: imicrobe_node_conf
+
+  - name: CentOS | Configure nginx with imicrobe-node.conf
+    copy:
+      src: files/imicrobe-node.conf
+      dest: /etc/nginx/conf.d/
+    when: imicrobe_node_conf.stat.exists == False

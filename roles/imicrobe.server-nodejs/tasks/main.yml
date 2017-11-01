@@ -2,7 +2,7 @@
   - name: Clone the node-imicrobe repository
     git:
       repo: https://github.com/hurwitzlab/node-imicrobe.git
-      dest: /home/imicrobe/imicrobe/lib/node-imicrobe
+      dest: /home/imicrobe/node-imicrobe
     become_user: imicrobe
 
   - name: Install node-imicrobe
@@ -11,5 +11,24 @@
       - cp config.json.default config.json
       - npm install
     args:
-      chdir: /home/imicrobe/imicrobe/lib/node-imicrobe
+      chdir: /home/imicrobe/node-imicrobe
     become_user: imicrobe
+
+  - name: Insert password for imicrobe database
+    lineinfile:
+      dest: /home/imicrobe/node-imicrobe/config.json
+      regexp: "^(\\s*)\"password\": \"<password>\","
+      line:   "\\1\"password\": \"{{ imicrobe_mysql_pw }}\","
+      backrefs: yes
+
+  - name: Install PM2
+    command: npm install -g pm2
+
+  - name: Set up the node server as a service using PM2
+    command: pm2 start server.js
+    args:
+      chdir: /home/imicrobe/node-imicrobe
+    become_user: imicrobe
+
+  - name: Start the node server on boot with systemd
+    command: pm2 startup systemd -u imicrobe --hp /home/imicrobe
