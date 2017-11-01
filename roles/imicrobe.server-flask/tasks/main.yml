@@ -25,20 +25,20 @@
   # if the develop branch has been checked out:
   #   * develop
   #     master
-  - name: Register variable flask_imicrobe_branch
-    command: git branch
-    register: flask_imicrobe_branch
-    args:
-      chdir: /home/imicrobe/flask-imicrobe
-    become_user: imicrobe
+  #- name: Register variable flask_imicrobe_branch
+  #  command: git branch
+  #  register: flask_imicrobe_branch
+  #  args:
+  #    chdir: /home/imicrobe/flask-imicrobe
+  #  become_user: imicrobe
 
-  - name: Checkout branch 'develop' if it has not been checked out
-    command: git checkout develop
-    args:
-      chdir: /home/imicrobe/flask-imicrobe
-    when:
-      flask_imicrobe_branch.stdout.splitlines()[0].endswith('develop') == false
-    become_user: imicrobe
+  #- name: Checkout branch 'develop' if it has not been checked out
+  #  command: git checkout develop
+  #  args:
+  #    chdir: /home/imicrobe/flask-imicrobe
+  #  when:
+  #    flask_imicrobe_branch.stdout.splitlines()[0].endswith('develop') == false
+  #  become_user: imicrobe
 
   - name: Create a production virtual environment for flask-imicrobe
     command: "{{ item }}"
@@ -47,23 +47,9 @@
       - python3.6 -m venv flim
       - flim/bin/pip install setuptools --upgrade
       - flim/bin/pip install wheel
-      - flim/bin/pip install -r requirements.txt
-      - flim/bin/pip install gunicorn
+      # having trouble with this
+      #- flim/bin/pip install -r requirements.txt
+      #- flim/bin/python /home/imicrobe/flask-imicrobe/write_models.py
     args:
       chdir: /home/imicrobe/flask-imicrobe
     become_user: imicrobe
-
-  - name: Create a development virtual environment for flask-imicrobe
-    command: "{{ item }}"
-    with_items:
-      - rm -rf flim
-      - python3.6 -m venv flim
-      - flim/bin/pip install setuptools --upgrade
-      - flim/bin/pip install wheel
-      - flim/bin/pip install -r /home/imicrobe/flask-imicrobe/requirements.txt
-      - flim/bin/pip install gunicorn
-    args:
-      chdir: /home/vagrant
-    # next line causes failure in CentOS permission denied to read requirements.txt but not Ubuntu (?)
-    # will the user be root?
-    #become: false

@@ -30,3 +30,20 @@
       path: /home/vagrant/.bash_profile
       line: export IMICROBE_FLASK_SESSION_SECRET_KEY={{ imicrobe_flask_session_secret_key }}
     become: false
+
+  - name: CentOS | Set IMICROBE_FLASK_ADMIN_PW
+    lineinfile:
+      path: /home/vagrant/.bash_profile
+      line: export IMICROBE_FLASK_ADMIN_PW={{ imicrobe_flask_admin_interface_pw }}
+    become: false
+
+  - name: CentOS | Create a development virtual environment for flask-imicrobe
+    command: "{{ item }}"
+    with_items:
+      - rm -rf flim
+      - python3.6 -m venv flim
+      - flim/bin/pip install setuptools --upgrade
+      - flim/bin/pip install wheel
+    args:
+      chdir: /home/vagrant
+    become: false

@@ -27,3 +27,22 @@
       path: /home/vagrant/.profile
       line: export IMICROBE_FLASK_SESSION_SECRET_KEY={{ imicrobe_flask_session_secret_key }}
     become: false
+
+  - name: Ubuntu | Set IMICROBE_FLASK_ADMIN_PW
+    lineinfile:
+      path: /home/vagrant/.profile
+      line: export IMICROBE_FLASK_ADMIN_PW={{ imicrobe_flask_admin_interface_pw }}
+    become: false
+
+  - name: Ubuntu | Create a development virtual environment for flask-imicrobe
+    command: "{{ item }}"
+    with_items:
+      - rm -rf flim
+      - python3.6 -m venv flim
+      - flim/bin/pip install setuptools --upgrade
+      - flim/bin/pip install wheel
+    args:
+      chdir: /home/vagrant
+    # next line causes failure in CentOS permission denied to read requirements.txt but not Ubuntu (?)
+    # want become: false so virtual environment directory will be owned by vagrant user
+    become_user: vagrant
