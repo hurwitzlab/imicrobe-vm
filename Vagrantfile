@@ -13,6 +13,8 @@ Vagrant.configure("2") do |config|
 
   config.vm.synced_folder "~/project/imicrobe/elm-imicrobe-spa", "/elm-imicrobe-spa"
   config.vm.synced_folder "~/project/imicrobe/flask-imicrobe", "/flask-imicrobe"
+  config.vm.synced_folder "~/project/imicrobe/imicrobe-python-orm", "/imicrobe-python-orm"
+  config.vm.synced_folder "~/project/imicrobe/imicrobe-load-uproc-results", "/imicrobe-load-uproc-results"
 
   config.vm.provider "virtualbox" do |vb|
     vb.name = "iMicrobe"
