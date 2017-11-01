@@ -9,7 +9,7 @@ Vagrant.configure("2") do |config|
 
   config.vm.network "forwarded_port", host: 8000, guest: 80
   config.vm.network "forwarded_port", host: 8443, guest: 443
-  config.vm.network "forwarded_port", host: 5000, guest: 5000
+  #config.vm.network "forwarded_port", host: 5000, guest: 5000
 
   config.vm.synced_folder "~/project/imicrobe/elm-imicrobe-spa", "/elm-imicrobe-spa"
   config.vm.synced_folder "~/project/imicrobe/flask-imicrobe", "/flask-imicrobe"
