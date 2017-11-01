@@ -63,8 +63,8 @@
         # MariaDB 10.1
         path: /etc/mysql/conf.d/mariadb.cnf
         block: |
-          wait_timeout=30
-          interactive_timeout=30
+          wait_timeout=300
+          interactive_timeout=300
           max_connections=1000
         insertafter: "^\\[mysqld\\]"
       when:
@@ -77,8 +77,8 @@
         # MariaDB 10.1
         path: /etc/my.cnf
         block: |
-          wait_timeout=30
-          interactive_timeout=30
+          wait_timeout=300
+          interactive_timeout=300
           max_connections=1000
         insertafter: "^\\[mysqld\\]"
       when:
