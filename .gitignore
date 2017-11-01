@@ -1,4 +1,5 @@
 *.retry
 .vagrant/
 
+Vagrantfile
 imicrobe_vars.yml
