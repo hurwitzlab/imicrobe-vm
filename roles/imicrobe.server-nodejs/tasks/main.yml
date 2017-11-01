@@ -21,7 +21,7 @@
       line:   "\\1\"password\": \"{{ imicrobe_mysql_pw }}\","
       backrefs: yes
 
-  - name: Set up the node server as a service using PM2
+  - name: Install PM2
     command: npm install -g pm2
 
   - name: Set up the node server as a service using PM2
