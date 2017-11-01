@@ -46,6 +46,12 @@ $ vagrant plugin install vagrant-vbguest
 $ git clone https://github.com/hurwitzlab/imicrobe-vm.git
 ```
 
+### Make a local copy of Vagrantfile.default and add directories to be shared
+
+```
+$ cp Vagrantfile.default Vagrantfile
+```
+
 ### Make a local copy of imicrobe_vars.yml.default and enter the necessary information
 
 ```
