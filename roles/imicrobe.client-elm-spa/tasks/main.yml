@@ -8,10 +8,16 @@
       dest: /home/imicrobe/elm-imicrobe-spa
     become_user: imicrobe
 
+  - name: Clone the landing page repository
+    git:
+      repo: https://github.com/hurwitzlab/imicrobe-landing-page.git
+      dest: /home/imicrobe/elm-imicrobe-spa/plugins/landing-page
+
   - name: Build elm-imicrobe-spa
     command: "{{ item }}"
     with_items:
       - cp config.json.default config.json
+      - cp src/ConfigDefault.elm src/Config.elm
       - elm package install -y
       - npm install
       - npm run build
