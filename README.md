@@ -32,7 +32,7 @@ $ source activate imicrobevm
 
 ### Install vagrant-vbguest plugin
 
-It is very helpful to install the `vagrant-vbguest` plugin. This plugin automatically updates the VirtualBox Guest Additions kernel modules in a VM each time you run `vagrant up`. Install it with this command:
+It is very helpful but not necessary to install the `vagrant-vbguest` plugin. This Vagrant plugin automatically installs the correct version of VirtualBox Guest Additions kernel modules in a VM after VirtualBox is updated. Install the plugin with this command:
 
 ```
 $ vagrant plugin install vagrant-vbguest
@@ -46,7 +46,9 @@ $ vagrant plugin install vagrant-vbguest
 $ git clone https://github.com/hurwitzlab/imicrobe-vm.git
 ```
 
-### Make a local copy of Vagrantfile.default and add directories to be shared
+### Make a local copy of Vagrantfile.default and customize it for your host
+
+Add directories to be shared, set up port forwarding, set the number of CPUs and amount of memory the VM will use, and more!
 
 ```
 $ cp Vagrantfile.default Vagrantfile
