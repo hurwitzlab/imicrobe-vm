@@ -6,6 +6,8 @@ root_mysql_pw:
 
 imicrobe_mysql_pw:
 
+imicrobe_flask_admin_interface_pw:
+
 imicrobe_secret:
 imicrobe_gmap_api_key:
 imicrobe_google_analytics_key:
