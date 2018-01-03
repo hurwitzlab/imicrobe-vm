@@ -1,19 +1,23 @@
 ---
-- name: Install variety-cli for load-search.pl
-  npm:
-     name: variety-cli
-     global: yes
-     executable: /usr/bin/npm
+#- name: Install variety-cli for load-search.pl
+#  npm:
+#     name: variety-cli
+#     global: yes
+#     executable: /usr/bin/npm
 
-- name: Has the repository already been cloned?
-  stat: path=/home/imicrobe/imicrobe/lib/.git
-  register: imicrobe_lib_dot_git
+- name: Install variety-cli for load-search.pl
+  # without sudo here I get an error
+  #   "npm ERR! code 128\nnpm ERR! Command failed: /usr/bin/git clone -q git://github.com/variety/variety.git /root/.npm/_cacache/tmp/git-clone-837df5f3\nnpm ERR! fatal: could not create leading directories of '/root/.npm/_cacache/tmp/git-clone-837df5f3': Permission denied" sudo npm install variety-cli -g
+  command: sudo npm install --unsafe-perm -g variety-cli
+
+#- name: Has the repository already been cloned?
+#  stat: path=/home/imicrobe/imicrobe/lib/.git
+#  register: imicrobe_lib_dot_git
 
 - name: clone the imicrobe-lib repository
   git:
     repo: https://github.com/hurwitzlab/imicrobe-lib.git
     dest: /home/imicrobe/imicrobe/lib
-  when: not imicrobe_lib_dot_git.stat.exists
   become_user: imicrobe
 
 - name: checkout the newvm branch

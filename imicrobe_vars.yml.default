@@ -6,6 +6,7 @@ root_mysql_pw:
 
 imicrobe_mysql_pw:
 
+imicrobe_flask_admin_interface_un:
 imicrobe_flask_admin_interface_pw:
 
 imicrobe_secret:

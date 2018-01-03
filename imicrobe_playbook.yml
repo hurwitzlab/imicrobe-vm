@@ -5,6 +5,7 @@
   become_method: sudo
   vars_files:
     - imicrobe_vars.yml
+    - muscope_vars.yml
 
   roles:
     - { role: imicrobe.base-server }
@@ -28,16 +29,16 @@
           ansible_distribution == 'CentOS'
       }
 
-    - { role: lesmyrmidons.mongodb,
-        mongodb_version: "3.4",
-        # Ubuntu
-        url_apt_key: "http://keyserver.ubuntu.com/pks/lookup?op=get&search=",
-        id_apt_key: 0C49F3730359A14518585931BC711F9BA15703C6,
-        mongodb_repository: "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/{{ mongodb_version }} multiverse",
-        # CentOS
-        mongodb_repo_baseurl: "https://repo.mongodb.org/yum/redhat/{{ ansible_distribution_major_version }}/mongodb-org/{{ mongodb_version }}/x86_64/",
-        mongodb_repo_gpgcheck: yes,
-        mongodb_repo_gpgkey: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc" }
+    #- { role: lesmyrmidons.mongodb,
+    #    mongodb_version: "3.6",
+    #    # Ubuntu
+    #    url_apt_key: "http://keyserver.ubuntu.com/pks/lookup?op=get&search=",
+    #    id_apt_key: 0C49F3730359A14518585931BC711F9BA15703C6,
+    #    mongodb_repository: "deb [ arch=amd64 ] http://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/{{ mongodb_version }} multiverse",
+    #    # CentOS
+    #    mongodb_repo_baseurl: "https://repo.mongodb.org/yum/redhat/{{ ansible_distribution_major_version }}/mongodb-org/{{ mongodb_version }}/x86_64/",
+    #    mongodb_repo_gpgcheck: yes,
+    #    mongodb_repo_gpgkey: "https://www.mongodb.org/static/pgp/server-{{ mongodb_version }}.asc" }
 
     - { role: imicrobe.nginx }
 
@@ -48,6 +49,8 @@
     - { role: imicrobe.server-flask }
     - { role: imicrobe.server-nodejs }
     - { role: imicrobe.import-dbs }
+
+    - { role: muscope.admin }
 
   tasks:
     # the default wait_timeout and interactive_timeout are very high and we

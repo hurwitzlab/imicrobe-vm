@@ -2,7 +2,6 @@
   - name: Ubuntu | Install nginx
     apt:
       name: "{{ item }}"
-      update_cache: yes
     with_items:
       - nginx
       - certbot

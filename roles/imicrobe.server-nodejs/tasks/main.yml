@@ -32,3 +32,34 @@
 
   - name: Start the node server on boot with systemd
     command: pm2 startup systemd -u imicrobe --hp /home/imicrobe
+
+  - name: Clone the occ-plan-b repository
+    git:
+      repo: https://github.com/hurwitzlab/occ-plan-b.git
+      dest: /home/imicrobe/occ-plan-b
+    become_user: imicrobe
+
+  - name: Install occ-plan-b
+    command: npm install
+    args:
+      chdir: /home/imicrobe/occ-plan-b
+    become_user: imicrobe
+
+  - name: Install sqlite3
+    apt:
+      name: sqlite3
+
+  - name: Create the occ-plan-b database
+    shell: cat occ-plan-b.sql | sqlite3 occ-plan-b.sqlite3
+    args:
+      chdir: /home/imicrobe/occ-plan-b
+    become_user: imicrobe
+
+  - name: Set up the occ-plan-b server as a service using PM2
+    command: pm2 start server.js
+    args:
+      chdir: /home/imicrobe/occ-plan-b
+    become_user: imicrobe
+
+  - name: Start the occ-plan-b server on boot with systemd
+    command: pm2 startup systemd -u imicrobe --hp /home/imicrobe

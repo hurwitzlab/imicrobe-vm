@@ -17,16 +17,33 @@
       - libssl-dev
       - htop
 
+  - name: Ubuntu | Install irods-icommands
+    shell: "{{ item }}"
+    with_items:
+      - wget -qO - https://packages.irods.org/irods-signing-key.asc | sudo apt-key add -
+      - echo "deb [arch=amd64] https://packages.irods.org/apt/ xenial main" | sudo tee /etc/apt/sources.list.d/renci-irods.list
+      - apt update
+      - apt install -y irods-icommands
+
   - name: Ubuntu | Install cpanm
     shell: curl -L https://cpanmin.us | perl - --sudo App::cpanminus
 
-  - name: Ubuntu | Install node 7.x + npm 4.x (node 8.x + npm 5.x are broken)
+  #- name: Ubuntu | Install node 7.x + npm 4.x (node 8.x + npm 5.x are broken?)
+  #  shell: "{{ item }}"
+  #  with_items:
+  #    - "curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -"
+  #    - "apt install -y nodejs"
+  #    - "npm uninstall --save node-uuid"  # this module is deprecated and
+  #    - "npm install --save uuid"         # causes other installs to fail
+
+  - name: Ubuntu | Install node 8.x + npm 5.x
     shell: "{{ item }}"
     with_items:
-      - "curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -"
+      #- "curl -sL https://deb.nodesource.com/setup_9.x | sudo -E bash -"
+      - "curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -"
       - "apt install -y nodejs"
-      - "npm uninstall --save node-uuid"  # this module is deprecated and
-      - "npm install --save uuid"         # causes other installs to fail
+      # - "npm uninstall --save node-uuid -g"  # this module is deprecated and
+      # - "npm install --save uuid -g"         # causes other installs to fail
 
   # 10.2 is not compatible with perl-DBD yet
   - name: Ubuntu | add MariaDB 10.1 apt repository key but install later
@@ -36,3 +53,12 @@
       - add-apt-repository 'deb [arch=amd64] http://ftp.heanet.ie/mirrors/mariadb/repo/10.1/ubuntu yakkety main'
       - apt update
       # installing here hangs I don't know why
+
+  - name: Ubuntu | Install MongoDB
+    shell: "{{ item }}"
+    with_items:
+      - apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2930ADAE8CAF5059EE73BB4B58712A2291FA4AD5
+      - echo "deb [ arch=amd64,arm64 ] https://repo.mongodb.org/apt/ubuntu xenial/mongodb-org/3.6 multiverse" | sudo tee /etc/apt/sources.list.d/mongodb-org-3.6.list
+      - apt update
+      - apt install -y mongodb-org
+      - systemctl start mongod

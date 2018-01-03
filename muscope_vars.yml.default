@@ -1,0 +1,24 @@
+---
+# make a copy of this file called 'muscope_vars.yml'
+# and insert the missing information
+
+root_mysql_pw:
+
+muscope_mysql_pw:
+
+muscope_flask_admin_interface_un:
+muscope_flask_admin_interface_pw:
+muscope_flask_session_secret_key:
+
+muscope_secret:
+muscope_gmap_api_key:
+muscope_google_analytics_key:
+
+muscope_tacc_public:
+muscope_tacc_private:
+muscope_tacc_redirect_url:
+
+muscope_mongo_host:
+
+muscope_captcha_public_key:
+muscope_captcha_private_key:

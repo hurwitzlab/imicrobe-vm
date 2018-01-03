@@ -36,13 +36,21 @@
   - name: CentOS | Install cpanm
     shell: curl -L https://cpanmin.us | /usr/local/bin/perl - --sudo App::cpanminus
 
-  - name: CentOS | Install Node.js 7.x + npm 4.x (npm 5.x is broken)
+  - name: CentOS | Install Node.js 8.x + npm 5.x
     shell: "{{ item }}"
     with_items:
-      - "curl -sL https://rpm.nodesource.com/setup_7.x | sudo -E bash -"
-      - "yum install -y nodejs"
-      - "npm uninstall --save node-uuid"  # this module is deprecated and
-      - "npm install --save uuid"         # causes other installs to fail
+      - "curl --silent --location https://rpm.nodesource.com/setup_8.x | sudo bash -"
+      - "yum -y install nodejs"
+      #- "npm uninstall --save node-uuid"  # this module is deprecated and
+      #- "npm install --save uuid"         # causes other installs to fail
+
+#  - name: CentOS | Install Node.js 7.x + npm 4.x (npm 5.x is broken)
+#    shell: "{{ item }}"
+#    with_items:
+#      - "curl -sL https://rpm.nodesource.com/setup_7.x | sudo -E bash -"
+#      - "yum install -y nodejs"
+#      - "npm uninstall --save node-uuid"  # this module is deprecated and
+#      - "npm install --save uuid"         # causes other installs to fail
 
   - name: CentOS | Add MariaDB 10.1 yum repository but install later
     yum_repository:

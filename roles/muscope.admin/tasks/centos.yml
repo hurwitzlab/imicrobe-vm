@@ -1,0 +1,55 @@
+---
+  - name: CentOS | Install IUS repository for Python 3.6 packages
+    yum:
+      name: https://centos7.iuscommunity.org/ius-release.rpm
+      state: latest
+
+  - name: CentOS | Install Python 3.6
+    yum:
+      name: "{{ item }}"
+      state: latest
+    with_items:
+      - python36u
+      - python36u-pip
+      - python36u-devel
+
+  - name: CentOS | Set MUSCOPE_DB_URI for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.bash_profile
+      line: export MUSCOPE_DB_URI=mysql+pymysql://imicrobe:{{ imicrobe_mysql_pw }}@127.0.0.1/muscope2
+    become: false
+
+  - name: CentOS | Set MUSCOPE_FLASK_CONFIG for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.bash_profile
+      line: export MUSCOPE_FLASK_CONFIG=development
+    become: false
+
+  - name: CentOS | Set MUSCOPE_ADMIN_CONSOLE_SESSION_SECRET_KEY for development as vagrant user
+    lineinfile:
+      path: /home/vagrant/.bash_profile
+      line: export MUSCOPE_ADMIN_CONSOLE_SESSION_SECRET_KEY={{ muscope_flask_session_secret_key }}
+    become: false
+
+  - name: CentOS | Set MUSCOPE_ADMIN_CONSOLE_UN
+    lineinfile:
+      path: /home/vagrant/.bash_profile
+      line: export MUSCOPE_ADMIN_CONSOLE_UN={{ muscope_flask_admin_interface_pw }}
+    become: false
+
+  - name: CentOS | Set MUSCOPE_ADMIN_CONSOLE_PW
+    lineinfile:
+      path: /home/vagrant/.bash_profile
+      line: export MUSCOPE_ADMIN_CONSOLE_PW={{ muscope_flask_admin_interface_pw }}
+    become: false
+
+  - name: CentOS | Create a development virtual environment for flask-muscope
+    command: "{{ item }}"
+    with_items:
+      - rm -rf flum
+      - python3.6 -m venv flum
+      - flum/bin/pip install setuptools --upgrade
+      - flum/bin/pip install wheel
+    args:
+      chdir: /home/vagrant
+    become: false

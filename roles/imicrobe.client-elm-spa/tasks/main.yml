@@ -1,6 +1,6 @@
 ---
-  - name: Install Elm
-    command: npm install -g elm
+  - name: Install Elm (--unsafe-perm needed with newer npm on ubuntu)
+    command: npm install --unsafe-perm -g elm
 
   - name: Clone the elm-imicrobe-spa repository
     git:
@@ -13,13 +13,23 @@
       repo: https://github.com/hurwitzlab/imicrobe-landing-page.git
       dest: /home/imicrobe/elm-imicrobe-spa/plugins/landing-page
 
-  - name: Build elm-imicrobe-spa
+  - name: Make a copy of src/ConfigDefault.elm
+    command: cp /home/imicrobe/elm-imicrobe-spa/src/ConfigDefault.elm /home/imicrobe/elm-imicrobe-spa/src/Config.elm
+
+  - name: Replace the production server URL
+    replace:
+      path: /home/imicrobe/elm-imicrobe-spa/src/Config.elm
+      regexp: '(\s+)"http://www.imicrobe.us/api/v1"'
+      replace: '\1"https://localhost:8443/api/v1"'
+
+  - name: Build elm-imicrobe-spa (--unsafe-perm needed with newer npm on ubuntu)
     command: "{{ item }}"
     with_items:
       - cp config.json.default config.json
-      - cp src/ConfigDefault.elm src/Config.elm
       - elm package install -y
-      - npm install
+      #- npm install --unsafe-perm webpack
+      - npm update
+      - npm install --unsafe-perm
       - npm run build
     args:
       chdir: /home/imicrobe/elm-imicrobe-spa

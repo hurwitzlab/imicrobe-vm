@@ -28,6 +28,12 @@
       line: export IMICROBE_FLASK_SESSION_SECRET_KEY={{ imicrobe_flask_session_secret_key }}
     become: false
 
+  - name: Ubuntu | Set IMICROBE_FLASK_ADMIN_UN
+    lineinfile:
+      path: /home/vagrant/.profile
+      line: export IMICROBE_FLASK_ADMIN_UN={{ imicrobe_flask_admin_interface_un }}
+    become: false
+
   - name: Ubuntu | Set IMICROBE_FLASK_ADMIN_PW
     lineinfile:
       path: /home/vagrant/.profile
