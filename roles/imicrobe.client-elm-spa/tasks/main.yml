@@ -12,6 +12,7 @@
     git:
       repo: https://github.com/hurwitzlab/imicrobe-landing-page.git
       dest: /home/imicrobe/elm-imicrobe-spa/plugins/landing-page
+    become_user: imicrobe
 
   - name: Make a copy of src/ConfigDefault.elm
     command: cp /home/imicrobe/elm-imicrobe-spa/src/ConfigDefault.elm /home/imicrobe/elm-imicrobe-spa/src/Config.elm
@@ -27,10 +28,19 @@
     with_items:
       - cp config.json.default config.json
       - elm package install -y
-      #- npm install --unsafe-perm webpack
       - npm update
       - npm install --unsafe-perm
       - npm run build
     args:
       chdir: /home/imicrobe/elm-imicrobe-spa
+    become_user: imicrobe
+
+  - name: Link css/ inside dist/, plugins/ inside dist/
+    file:
+      src: /home/imicrobe/elm-imicrobe-spa/{{ item }}
+      dest: /home/imicrobe/elm-imicrobe-spa/dist/{{ item }}
+      state: link
+    with_items:
+      - 'css'
+      - 'plugins'
     become_user: imicrobe
